@@ -15,7 +15,7 @@ const authRoutes = require('./routes/authRoutes');
 const app = express();
 
 // Middleware
-app.use(helmet()); //helmet is used to secure the app by setting various HTTP headers
+app.use(helmet()); //helmet is used to secure the app by setting various HTTP headers 
 app.use(cors()); //cors is used to allow cross-origin requests
 app.use(express.json()); //express.json() is used to parse the incoming requests with JSON payloads
 

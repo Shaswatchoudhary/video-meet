@@ -1,0 +1,31 @@
+services:
+  api:
+    build: .
+    container_name: videomeet-api
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - MONGO_URI=mongodb://mongo:27017/videomeet
+      - JWT_SECRET=${JWT_SECRET}
+      - NODE_OPTIONS=--require apminsight
+      - APMINSIGHT_LICENSE_KEY=in_1c81f2a8d244e8b20d97a7c5a76ce2fd
+      - APMINSIGHT_APP_NAME=videomeet
+      - APMINSIGHT_APP_PORT=8000
+    depends_on:
+      mongo:
+        condition: service_started
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:7
+    container_name: videomeet-mongo
+    platform: linux/arm64
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+volumes:
+  mongo_data:

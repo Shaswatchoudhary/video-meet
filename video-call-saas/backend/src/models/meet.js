@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
 
-const meetSchema = new mongoose.Schema({
+const meetSchema = new Schema({
 
   meetId: {
     type: String,
@@ -9,7 +9,7 @@ const meetSchema = new mongoose.Schema({
     unique: true,
   },
   host: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "User",
     required: true
   },
@@ -19,5 +19,5 @@ const meetSchema = new mongoose.Schema({
   }
 }, { timestamps: true })
 
-module.exports = mongoose.model("Meet", meetSchema);
+export default model("Meet", meetSchema);
 // module.exports = Meeting; //this is just for type checking means if i use this in another file then i can use this type checking

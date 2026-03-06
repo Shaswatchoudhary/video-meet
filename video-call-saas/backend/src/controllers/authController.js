@@ -1,10 +1,10 @@
-const User = require('../models/User');
-const generateToken = require('../utils/generateToken');
+import { findOne, create } from '../models/User';
+import generateToken from '../utils/generateToken';
 
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  const user = await findOne({ email });
 
   if (user && (await user.matchPassword(password))) {
     res.json({
@@ -20,13 +20,13 @@ const loginUser = async (req, res) => {
 };
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
-  const userExists = await User.findOne({ email });
+  const userExists = await findOne({ email });
 
   if (userExists) {
     return res.status(400).json({ message: 'User already exists' });
   }
 
-  const user = await User.create({
+  const user = await create({
     name,
     email,
     password,
@@ -44,6 +44,6 @@ const registerUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+export default { registerUser, loginUser };
 
 

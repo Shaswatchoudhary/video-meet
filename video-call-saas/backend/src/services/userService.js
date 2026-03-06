@@ -1,10 +1,10 @@
-const User = require('../models/User');
+import { findOne } from '../models/User';
 
 const findUserByEmail = async (email) => {
-  return await User.findOne({ email });
+  return await findOne({ email });
 };
 
-module.exports = {
+export default {
   findUserByEmail,
 };// we using this because it is a good practice to separate business logic from controllers 
 //if we use this in multiple controllers then we can reuse this function

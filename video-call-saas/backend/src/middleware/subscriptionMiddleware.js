@@ -1,3 +1,5 @@
+import meet from '../models/meet';
+
 const subscriptionMiddleware = (req, res, next) => {
   if (req.user.subscriptionStatus !== "active") {
     return res.status(403).json({ message: "Subscription required" });
@@ -5,4 +7,4 @@ const subscriptionMiddleware = (req, res, next) => {
   next();
 }
 
-module.exports = subscriptionMiddleware;
+export default subscriptionMiddleware;

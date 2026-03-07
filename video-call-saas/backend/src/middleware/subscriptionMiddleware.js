@@ -1,4 +1,3 @@
-import meet from '../models/meet';
 
 const subscriptionMiddleware = (req, res, next) => {
   if (req.user.subscriptionStatus !== "active") {

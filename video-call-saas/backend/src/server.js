@@ -10,7 +10,7 @@ dotenv.config();
 // Connect to Database
 connectDB();
 
-const authRoutes = require('./routes/authRoutes');
+import authRoutes from './routes/authRoutes';
 
 const app = express();
 

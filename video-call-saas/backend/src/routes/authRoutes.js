@@ -2,7 +2,7 @@ import express from 'express';
 import { registerUser, loginUser } from '../controllers/authController';
 import { protect } from '../middleware/authMiddleware';
 import subscriptionMiddleware from '../middleware/subscriptionMiddleware';
-import { createMeeting } from '../controllers/meetingController';
+import createMeeting from '../controllers/meetingController';
 
 
 const router = express.Router();

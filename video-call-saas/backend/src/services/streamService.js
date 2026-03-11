@@ -5,9 +5,7 @@ const streamClient = new StreamClient(
   process.env.STREAM_SECRET
 );
 
-const generateStreamToken = (userId) => {
+export const generateStreamToken = (userId) => {
   const token = streamClient.generateUserToken({ user_id: userId });
   return token;
 };
-
-export default { generateStreamToken };

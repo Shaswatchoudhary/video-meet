@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --animate-float-slow: float 6s ease-in-out infinite;
+  --animate-float-medium: float 4s ease-in-out infinite;
+  --animate-glow-pulse: pulseGlow 3s infinite alternate;
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  @keyframes pulseGlow {
+    0% {
+      opacity: 0.3;
+      filter: blur(10px);
+    }
+
+    100% {
+      opacity: 0.6;
+      filter: blur(20px);
+    }
+  }
+}
+
+@layer base {
+  body {
+    background: #F8FAFC;
+    color: #0F172A;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+  }
+
+  .gradient-border-glow {
+    position: relative;
+  }
+
+  .gradient-border-glow::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(45deg, #2563EB, #60A5FA, #93C5FD);
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0.1;
+  }
+}

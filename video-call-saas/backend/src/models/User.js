@@ -18,7 +18,14 @@ const userSchema = new Schema({
   subscriptionStatus: {
     type: String,
     default: "inactive",
-    enum: ["active", "inactive"] //enum is used to restrict the values of a field means it will only accept the values which are in the enum
+    enum: ["active", "inactive"]
+  },
+  planName: {
+    type: String,
+    default: "Free"
+  },
+  nextBillingDate: {
+    type: Date
   },
   createdAt: {
     type: Date,

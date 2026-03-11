@@ -8,6 +8,8 @@ services:
       - PORT=8000
       - MONGO_URI=mongodb://mongo:27017/videomeet
       - JWT_SECRET=${JWT_SECRET}
+      - STREAM_API_KEY=${STREAM_API_KEY}
+      - STREAM_SECRET=${STREAM_SECRET}
       - NODE_OPTIONS=--require apminsight
       - APMINSIGHT_LICENSE_KEY=in_1c81f2a8d244e8b20d97a7c5a76ce2fd
       - APMINSIGHT_APP_NAME=videomeet

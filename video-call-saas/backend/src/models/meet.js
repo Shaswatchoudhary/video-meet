@@ -8,10 +8,28 @@ const meetSchema = new Schema({
     required: true,
     unique: true,
   },
+  title: {
+    type: String,
+    default: "Untitled Meeting"
+  },
   host: {
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true
+  },
+  participants: [{
+    type: Schema.Types.ObjectId,
+    ref: "User"
+  }],
+  scheduledAt: {
+    type: Date,
+    default: Date.now
+  },
+  endTime: {
+    type: Date
+  },
+  duration: {
+    type: String
   },
   isActive: {
     type: Boolean,

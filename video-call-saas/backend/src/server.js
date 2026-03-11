@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
-import connectDB from './config/db';
+import connectDB from './config/db.js';
 
 // Load environment variables
 dotenv.config();
@@ -10,7 +10,9 @@ dotenv.config();
 // Connect to Database
 connectDB();
 
-import authRoutes from './routes/authRoutes';
+import authRoutes from './routes/authRoutes.js';
+import meetingRoutes from './routes/meetingRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 const app = express();
 
@@ -20,7 +22,9 @@ app.use(cors()); //cors is used to allow cross-origin requests
 app.use(express.json()); //express.json() is used to parse the incoming requests with JSON payloads
 
 // Routes
-app.use('/api/users', authRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/meetings', meetingRoutes);
+app.use('/api/dashboard', userRoutes);
 
 
 // Main Route

@@ -1,90 +1,907 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   StreamVideo,
   StreamVideoClient,
   StreamCall,
+  PaginatedGridLayout,
   SpeakerLayout,
-  CallControls,
   StreamTheme,
+  useCallStateHooks,
+  useCall,
 } from '@stream-io/video-react-sdk';
 import '@stream-io/video-react-sdk/dist/css/styles.css';
 import { useAppContext } from '../context/useAppContext';
-import { Loader2, ShieldAlert, Users as UsersIcon, MessageSquare } from 'lucide-react';
-import MeetingTopBar from './MeetingTopBar';
+import {
+  Mic, MicOff, Video, VideoOff, PhoneOff,
+  Monitor, Hand, Smile, Users, MessageSquare,
+  LayoutGrid, LayoutPanelLeft, Camera, Shield,
+  Copy, Check, ChevronUp, UsersRound,
+  Volume2, X, MoreVertical, Clock,
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import MeetingSidePanel from './MeetingSidePanel';
 
 const apiKey = 'f3yrnzjhm5wf';
+const REACTIONS = ['👍', '❤️', '😂', '😮', '👏', '🎉'];
 
+/* ── Floating emoji animation ── */
+const FloatEmoji = ({ emoji, x }) => (
+  <motion.div
+    initial={{ opacity: 1, y: 0, scale: 1 }}
+    animate={{ opacity: 0, y: -140, scale: 1.5 }}
+    transition={{ duration: 3, ease: "easeOut" }}
+    style={{
+      position: 'fixed', bottom: 100, left: `${x}%`,
+      fontSize: '2.2rem', pointerEvents: 'none', zIndex: 500,
+    }}
+  >
+    {emoji}
+  </motion.div>
+);
+
+/* ── Control Button with proper state handling (Google Meet style) ── */
+const ControlButton = ({
+  onClick, title, children,
+  isMuted = false,
+  isActive = false,
+  isDanger = false,
+  dark = false,
+}) => {
+  const [hovered, setHovered] = useState(false);
+
+  // Google Meet style colors
+  const getBackgroundColor = () => {
+    if (isDanger) {
+      return hovered ? '#b31412' : '#d93025'; // Red for leave
+    }
+    if (isMuted) {
+      return hovered ? '#b31412' : '#ea4335'; // Brighter red when muted
+    }
+    if (isActive) {
+      return hovered ? '#1a5c9e' : '#1a73e8'; // Blue when active
+    }
+    // Default gray
+    return hovered ? '#5f6368' : '#3c4043';
+  };
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <motion.button
+        title={title}
+        onClick={onClick}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        animate={isMuted ? {
+          boxShadow: [
+            "0 0 0 0px rgba(234, 67, 53, 0.4)",
+            "0 0 0 10px rgba(234, 67, 53, 0)",
+          ]
+        } : {}}
+        transition={isMuted ? {
+          duration: 1.5,
+          repeat: Infinity,
+          ease: "easeInOut"
+        } : {}}
+        style={{
+          height: 48,
+          width: 48,
+          borderRadius: '50%',
+          background: getBackgroundColor(),
+          border: isMuted ? '2px solid rgba(255,255,255,0.2)' : 'none',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'background 0.2s, transform 0.1s',
+          flexShrink: 0,
+          color: '#fff',
+          transform: hovered ? 'scale(1.05)' : 'scale(1)',
+          zIndex: 2,
+        }}
+      >
+        {children}
+      </motion.button>
+      {isMuted && (
+        <div style={{
+          position: 'absolute',
+          top: -18,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: '#ea4335',
+          color: '#fff',
+          fontSize: '0.6rem',
+          fontWeight: 800,
+          padding: '2px 6px',
+          borderRadius: 4,
+          fontFamily: "'Space Mono', monospace",
+          pointerEvents: 'none',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+          zIndex: 3
+        }}>
+          OFF
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ── Top Bar (matching HomePage theme) ── */
+const TopBar = ({ meetingId, time, participantCount, dark, remainingTime }) => {
+  const [copied, setCopied] = useState(false);
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(`${window.location.origin}/meeting/${meetingId}`);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const formatRemaining = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  return (
+    <div style={{
+      height: 64,
+      background: dark ? 'rgba(13,11,8,0.95)' : 'rgba(240,230,208,0.95)',
+      backdropFilter: 'blur(18px)',
+      borderBottom: `1px solid ${dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.18)'}`,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: '0 24px',
+      color: dark ? '#F0E8D8' : '#0F0A04',
+      flexShrink: 0,
+      zIndex: 10,
+      fontFamily: "'Plus Jakarta Sans', sans-serif",
+    }}>
+      {/* Left - Logo & Meeting ID */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{
+            width: 36, height: 36, borderRadius: 10,
+            background: dark ? '#F0E8D8' : '#0F0A04',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Video size={18} color={dark ? '#0F0A04' : '#F5E6C8'} />
+          </div>
+          <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>VEDAC</span>
+        </div>
+        
+        <button
+          onClick={copyLink}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            background: dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.5)',
+            border: `1px solid ${dark ? 'rgba(255,200,100,0.15)' : 'rgba(180,130,70,0.28)'}`,
+            borderRadius: 16,
+            padding: '6px 12px',
+            fontSize: '0.85rem',
+            color: dark ? '#F0E8D8' : '#0F0A04',
+            cursor: 'pointer',
+            fontFamily: "'Space Mono', monospace",
+          }}
+        >
+          <span>{meetingId}</span>
+          {copied ? <Check size={14} /> : <Copy size={14} />}
+        </button>
+      </div>
+
+      {/* Center - Time & Remaining & Participants */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <span style={{ 
+          fontSize: '0.9rem', 
+          color: dark ? '#b8a080' : '#7A5A28',
+          fontFamily: "'Space Mono', monospace",
+        }}>
+          {time}
+        </span>
+
+        {remainingTime !== null && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            background: remainingTime < 300 ? 'rgba(217, 48, 37, 0.1)' : (dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.5)'),
+            border: `1px solid ${remainingTime < 300 ? '#ea4335' : (dark ? 'rgba(255,200,100,0.15)' : 'rgba(180,130,70,0.28)')}`,
+            borderRadius: 16,
+            padding: '4px 10px',
+            color: remainingTime < 300 ? '#ea4335' : (dark ? '#F0E8D8' : '#0F0A04'),
+          }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 700, fontFamily: "'Space Mono', monospace" }}>
+              {formatRemaining(remainingTime)}
+            </span>
+          </div>
+        )}
+
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 6,
+          background: dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.5)',
+          border: `1px solid ${dark ? 'rgba(255,200,100,0.15)' : 'rgba(180,130,70,0.28)'}`,
+          borderRadius: 16,
+          padding: '4px 10px',
+        }}>
+          <UsersRound size={16} color={dark ? '#D4901A' : '#B8741A'} />
+          <span>{participantCount}</span>
+        </div>
+      </div>
+
+      {/* Right - Security Badge */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 6,
+        background: dark ? 'rgba(52,168,83,0.1)' : 'rgba(52,168,83,0.08)',
+        border: `1px solid ${dark ? 'rgba(52,168,83,0.3)' : 'rgba(52,168,83,0.25)'}`,
+        borderRadius: 20,
+        padding: '6px 12px',
+        color: '#34a853',
+        fontSize: '0.75rem',
+        fontFamily: "'Space Mono', monospace",
+      }}>
+        <Shield size={14} />
+        <span>End-to-end encrypted</span>
+      </div>
+    </div>
+  );
+};
+
+/* ── Bottom Bar (Google Meet style with proper mute indicators) ── */
+const BottomBar = ({ navigate, togglePanel, activePanel, meetingId, dark }) => {
+  const call = useCall();
+  const { 
+    useMicrophoneState, 
+    useCameraState, 
+    useLocalParticipant,
+    useParticipants 
+  } = useCallStateHooks();
+
+  const { isMuted: micMuted } = useMicrophoneState();
+  const { isMuted: camMuted } = useCameraState();
+  const localParticipant = useLocalParticipant();
+  const participants = useParticipants();
+
+  const [showReact, setShowReact] = useState(false);
+  const [handRaised, setHandRaised] = useState(false);
+  const [floats, setFloats] = useState([]);
+  const [sharing, setSharing] = useState(false);
+  const [layout, setLayout] = useState('grid');
+  const [showControls, setShowControls] = useState(true);
+  const reactRef = useRef(null);
+
+  // Auto-hide controls (Google Meet style)
+  useEffect(() => {
+    let timeout;
+    const handleMouseMove = () => {
+      setShowControls(true);
+      clearTimeout(timeout);
+      timeout = setTimeout(() => setShowControls(false), 3000);
+    };
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  const endCall = () => {
+    call?.leave();
+    navigate('/');
+  };
+
+  const sendReaction = emoji => {
+    setFloats(f => [...f, { emoji, id: Date.now(), x: 15 + Math.random() * 70 }]);
+    setTimeout(() => setFloats(f => f.slice(1)), 3200);
+  };
+
+  const toggleShare = async () => {
+    try {
+      if (!sharing) {
+        await call?.screenShare?.enable();
+        setSharing(true);
+      } else {
+        await call?.screenShare?.disable();
+        setSharing(false);
+      }
+    } catch (e) {
+      console.log('Screen share error:', e.message);
+    }
+  };
+
+  const toggleHand = () => {
+    const next = !handRaised;
+    setHandRaised(next);
+    call?.sendCustomEvent?.({
+      type: 'raise-hand',
+      custom: { userId: localParticipant?.userId, raised: next }
+    }).catch(() => {});
+  };
+
+  const cycleLayout = () => {
+    const next = layout === 'grid' ? 'speaker' : 'grid';
+    setLayout(next);
+    window.dispatchEvent(new CustomEvent('vm-layout', { detail: next }));
+  };
+
+  return (
+    <>
+      <AnimatePresence>
+        {floats.map(f => (
+          <FloatEmoji key={f.id} emoji={f.emoji} x={f.x} />
+        ))}
+      </AnimatePresence>
+
+      <motion.div 
+        className="bottom-bar-container"
+        initial={{ y: 100 }}
+        animate={{ y: showControls ? 0 : 100 }}
+        transition={{ duration: 0.3 }}
+        style={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 80,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pointerEvents: showControls ? 'auto' : 'none',
+          zIndex: 50,
+        }}
+      >
+        <div style={{
+          background: dark ? 'rgba(13,11,8,0.95)' : 'rgba(240,230,208,0.95)',
+          backdropFilter: 'blur(18px)',
+          border: `1px solid ${dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.18)'}`,
+          borderRadius: 40,
+          padding: '8px 16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+        }}>
+
+          {/* Layout toggle */}
+          <ControlButton
+            title={layout === 'grid' ? 'Switch to speaker view' : 'Switch to grid view'}
+            onClick={cycleLayout}
+            dark={dark}
+          >
+            {layout === 'grid' ? <LayoutPanelLeft size={20} /> : <LayoutGrid size={20} />}
+          </ControlButton>
+
+          <div style={{ width: 1, height: 32, background: dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.18)' }} />
+
+          {/* Mic - Turns RED when muted (Google Meet style) */}
+          <ControlButton
+            title={micMuted ? 'Unmute microphone (Ctrl+D)' : 'Mute microphone (Ctrl+D)'}
+            isMuted={micMuted}
+            onClick={() => call?.microphone.toggle()}
+            dark={dark}
+          >
+            {micMuted ? <MicOff size={20} /> : <Mic size={20} />}
+          </ControlButton>
+
+          {/* Camera - Turns RED when off */}
+          <ControlButton
+            title={camMuted ? 'Turn on camera (Ctrl+E)' : 'Turn off camera (Ctrl+E)'}
+            isMuted={camMuted}
+            onClick={() => call?.camera.toggle()}
+            dark={dark}
+          >
+            {camMuted ? <VideoOff size={20} /> : <Video size={20} />}
+          </ControlButton>
+
+          {/* Screen share */}
+          <ControlButton
+            title={sharing ? 'Stop presenting' : 'Present now'}
+            isActive={sharing}
+            onClick={toggleShare}
+            dark={dark}
+          >
+            <Monitor size={20} />
+          </ControlButton>
+
+          {/* Reactions */}
+          <div ref={reactRef} style={{ position: 'relative' }}>
+            <ControlButton 
+              title="Send a reaction" 
+              isActive={showReact} 
+              onClick={() => setShowReact(o => !o)}
+              dark={dark}
+            >
+              <Smile size={20} />
+            </ControlButton>
+            
+            <AnimatePresence>
+              {showReact && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                  style={{
+                    position: 'absolute',
+                    bottom: 'calc(100% + 10px)',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: dark ? 'rgba(18,13,8,0.97)' : 'rgba(253,249,241,0.97)',
+                    backdropFilter: 'blur(10px)',
+                    border: `1px solid ${dark ? 'rgba(255,200,100,0.14)' : 'rgba(180,130,70,0.25)'}`,
+                    borderRadius: 36,
+                    padding: '8px 14px',
+                    display: 'flex',
+                    gap: 4,
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+                    zIndex: 200,
+                  }}
+                >
+                  {REACTIONS.map(e => (
+                    <button
+                      key={e}
+                      onClick={() => { sendReaction(e); setShowReact(false); }}
+                      style={{
+                        fontSize: '1.5rem',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '4px 6px',
+                        borderRadius: 8,
+                        transition: 'transform 0.12s',
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.35)'}
+                      onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                    >
+                      {e}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Raise hand */}
+          <ControlButton
+            title={handRaised ? 'Lower hand' : 'Raise hand'}
+            isActive={handRaised}
+            onClick={toggleHand}
+            dark={dark}
+          >
+            <Hand size={20} />
+          </ControlButton>
+
+          <div style={{ width: 1, height: 32, background: dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.18)' }} />
+
+          {/* People panel */}
+          <ControlButton
+            title={`People (${participants.length})`}
+            isActive={activePanel === 'participants'}
+            onClick={() => togglePanel('participants')}
+            dark={dark}
+          >
+            <Users size={20} />
+          </ControlButton>
+
+          {/* Chat panel */}
+          <ControlButton
+            title="Chat"
+            isActive={activePanel === 'chat'}
+            onClick={() => togglePanel('chat')}
+            dark={dark}
+          >
+            <MessageSquare size={20} />
+          </ControlButton>
+
+          {/* More options — only visible to others */}
+          {participants.length > 1 && (
+            <ControlButton title="More options" onClick={() => {}} dark={dark}>
+              <MoreVertical size={20} />
+            </ControlButton>
+          )}
+
+          <div style={{ width: 1, height: 32, background: dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.18)' }} />
+
+          {/* Leave call - Always red */}
+          <button
+            title="Leave call"
+            onClick={endCall}
+            style={{
+              height: 48,
+              padding: '0 24px',
+              borderRadius: 24,
+              background: '#d93025',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              color: '#fff',
+              fontWeight: 600,
+              fontSize: '0.9rem',
+              transition: 'background 0.2s, transform 0.1s',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = '#b31412';
+              e.currentTarget.style.transform = 'scale(1.05)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = '#d93025';
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+          >
+            <PhoneOff size={20} />
+            <span>Leave</span>
+          </button>
+        </div>
+      </motion.div>
+    </>
+  );
+};
+
+/* ── Loading Screen (simplified, matching theme) ── */
+const LoadingScreen = ({ dark }) => {
+  return (
+    <div style={{
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: dark ? '#0D0B08' : '#F0E6D0',
+      gap: 24,
+      fontFamily: "'Plus Jakarta Sans', sans-serif",
+    }}>
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        style={{
+          width: 48,
+          height: 48,
+          borderRadius: '50%',
+          border: `3px solid ${dark ? 'rgba(212,144,26,0.2)' : 'rgba(184,116,26,0.2)'}`,
+          borderTopColor: dark ? '#D4901A' : '#B8741A',
+        }}
+      />
+      <div style={{ textAlign: 'center' }}>
+        <h2 style={{ color: dark ? '#F0E8D8' : '#0F0A04', marginBottom: 8 }}>Joining meeting...</h2>
+        <p style={{ color: dark ? '#b8a080' : '#7A5A28' }}>Please wait</p>
+      </div>
+    </div>
+  );
+};
+
+/* ── Meeting Layout ── */
+const MeetingLayout = ({ meetingId, isSidePanelOpen, navigate, togglePanel, activePanel, dark }) => {
+  const [time, setTime] = useState('');
+  const [layout, setLayout] = useState('grid');
+  const [remainingTime, setRemainingTime] = useState(null);
+  const [showEndModal, setShowEndModal] = useState(false);
+  
+  const { useParticipantCount } = useCallStateHooks();
+  const participantCount = useParticipantCount();
+  const call = useCall();
+
+  useEffect(() => {
+    // 1. Get host info and set limits
+    const hostRaw = localStorage.getItem('meet_host_info');
+    const hostInfo = hostRaw ? JSON.parse(hostRaw) : { plan: 'none' };
+    
+    const limits = {
+      none: 20 * 60,      // 20 mins
+      aarambh: 60 * 60,   // 60 mins
+      samraat: 24 * 60 * 60 // 24 hours
+    };
+    
+    const timeLimitSeconds = limits[hostInfo.plan] || (20 * 60);
+    const joinTime = Date.now();
+
+    const updateTime = () => {
+      // Current Wall Clock
+      setTime(new Date().toLocaleTimeString([], { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+      }));
+
+      // Meeting Duration Check
+      const elapsedSeconds = Math.floor((Date.now() - joinTime) / 1000);
+      const remaining = timeLimitSeconds - elapsedSeconds;
+      
+      if (remaining <= 0) {
+        setRemainingTime(0);
+        handleMeetingEnd();
+      } else {
+        setRemainingTime(remaining);
+      }
+    };
+
+    const handleMeetingEnd = () => {
+      setShowEndModal(true);
+      call?.leave();
+      setTimeout(() => navigate('/'), 5000);
+    };
+    
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+    
+    const handleLayoutChange = (e) => setLayout(e.detail);
+    window.addEventListener('vm-layout', handleLayoutChange);
+    
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener('vm-layout', handleLayoutChange);
+    };
+  }, [call, navigate]);
+
+  return (
+    <div style={{
+      height: '100vh',
+      width: '100vw',
+      background: dark ? '#0D0B08' : '#F0E6D0',
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden',
+      fontFamily: "'Plus Jakarta Sans', sans-serif",
+      position: 'relative',
+    }}>
+      <TopBar 
+        meetingId={meetingId} 
+        time={time} 
+        participantCount={participantCount}
+        dark={dark}
+        remainingTime={remainingTime}
+      />
+
+      <main style={{
+        flex: 1,
+        display: 'flex',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        <div style={{
+          flex: 1,
+          transition: 'margin-right 0.3s ease',
+          marginRight: isSidePanelOpen ? 360 : 0,
+        }}>
+          {layout === 'grid' ? <PaginatedGridLayout /> : <SpeakerLayout />}
+        </div>
+
+        <MeetingSidePanel
+          isOpen={isSidePanelOpen}
+          onClose={() => togglePanel(null)}
+          defaultTab={activePanel === 'chat' ? 'chat' : 'participants'}
+          dark={dark}
+        />
+      </main>
+
+      <BottomBar
+        navigate={navigate}
+        togglePanel={togglePanel}
+        activePanel={activePanel}
+        meetingId={meetingId}
+        dark={dark}
+      />
+
+      {/* Meeting Ended Modal */}
+      <AnimatePresence>
+        {showEndModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 1000,
+              background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(10px)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              style={{
+                background: dark ? '#1a1610' : '#fff',
+                padding: '40px 60px', borderRadius: 32, textAlign: 'center',
+                maxWidth: 450, color: dark ? '#F0E8D8' : '#0F0A04'
+              }}
+            >
+              <div style={{ width: 80, height: 80, background: 'rgba(217,48,37,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: '#ea4335' }}>
+                <Clock size={40} />
+              </div>
+              <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: 16 }}>Meeting Ended</h2>
+              <p style={{ opacity: 0.7, lineHeight: 1.6, marginBottom: 30 }}>
+                This meeting has reached its time limit based on the host's subscription plan.
+              </p>
+              <button onClick={() => navigate('/')} style={{ padding: '12px 32px', borderRadius: 24, background: '#ea4335', color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer' }}>
+                Go back Home
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+        .str-video,
+        .str-video__call,
+        .str-video__paginated-grid-layout,
+        .str-video__speaker-layout,
+        .str-video__speaker-layout__spotlight,
+        .str-video__speaker-layout__participants-bar {
+          background: transparent !important;
+        }
+
+        .str-video__participant-view {
+          border-radius: 12px !important;
+          overflow: hidden !important;
+          border: none !important;
+          background: ${dark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.5)'} !important;
+        }
+
+        .str-video__participant-view--no-video {
+          background: ${dark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.3)'} !important;
+        }
+
+        .str-video__avatar {
+          background: ${dark ? 'rgba(212,144,26,0.1)' : 'rgba(184,116,26,0.1)'} !important;
+          color: ${dark ? '#D4901A' : '#B8741A'} !important;
+        }
+
+        .str-video__paginated-grid-layout {
+          gap: 8px !important;
+          padding: 16px !important;
+        }
+
+        .str-video__call-controls {
+          display: none !important;
+        }
+
+        .str-video__participant-view__name {
+          background: rgba(0, 0, 0, 0.6) !important;
+          color: ${dark ? '#F0E8D8' : '#fff'} !important;
+          border-radius: 6px !important;
+          padding: 2px 8px !important;
+          font-size: 0.75rem !important;
+          font-family: "'Space Mono', monospace" !important;
+        }
+
+        .str-video__participant-view__audio-muted-indicator,
+        .str-video__participant-view__video-muted-indicator {
+          color: #d93025 !important;
+          fill: #d93025 !important;
+          background: rgba(0, 0, 0, 0.6) !important;
+          padding: 4px !important;
+          border-radius: 50% !important;
+        }
+
+        .str-video__participant-view--speaking {
+          box-shadow: 0 0 0 2px #34a853 !important;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+          width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: ${dark ? 'rgba(212,144,26,0.3)' : 'rgba(184,116,26,0.3)'};
+          border-radius: 10px;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+/* ── Main MeetingRoom Component ── */
 const MeetingRoom = () => {
   const { meetingId } = useParams();
   const navigate = useNavigate();
-  const { user } = useAppContext();
+  const { user, dark: themeDark } = useAppContext();
+  const [dark, setDark] = useState(themeDark || false);
+
   const [client, setClient] = useState(null);
   const [call, setCall] = useState(null);
   const [error, setError] = useState(null);
-  const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
-  const [activePanel, setActivePanel] = useState(null); // 'participants' | 'chat' | null
+  const [isSidePanelOpen, setSidePanel] = useState(false);
+  const [activePanel, setActivePanel] = useState(null);
 
   useEffect(() => {
     if (!user || !meetingId) return;
 
     const token = localStorage.getItem('stream_token');
     if (!token) {
-      setError('Authorization token missing. Please join again from the home page.');
+      setError('Authentication token not found. Please return to home and join again.');
       return;
     }
 
-    const streamClient = new StreamVideoClient({
-      apiKey,
-      user: {
-        id: user._id || user.id,
-        name: user.name,
-      },
-      token,
-    });
+    const initCall = async () => {
+      try {
+        const client = new StreamVideoClient({
+          apiKey,
+          user: { 
+            id: user._id || user.id, 
+            name: user.name,
+            image: user.avatar,
+          },
+          token,
+        });
 
-    const streamCall = streamClient.call('default', meetingId);
+        const call = client.call('default', meetingId);
+        
+        await call.join({ create: true });
+        
+        setClient(client);
+        setCall(call);
+      } catch (err) {
+        console.error('Failed to join call:', err);
+        setError('Could not join the meeting. Please check your connection and try again.');
+      }
+    };
 
-    setClient(streamClient);
-    setCall(streamCall);
-
-    streamCall.join({ create: true }).catch((err) => {
-      console.error('Failed to join call:', err);
-      setError('Failed to join the meeting room. Please check your connection.');
-    });
+    initCall();
 
     return () => {
-      streamCall.leave();
-      streamClient.disconnectUser();
+      if (call) {
+        call.leave().catch(() => {});
+      }
+      if (client) {
+        client.disconnectUser().catch(() => {});
+      }
     };
   }, [user, meetingId]);
 
   const togglePanel = (panel) => {
-    if (activePanel === panel) {
+    if (!panel || activePanel === panel) {
       setActivePanel(null);
-      setIsSidePanelOpen(false);
+      setSidePanel(false);
     } else {
       setActivePanel(panel);
-      setIsSidePanelOpen(true);
+      setSidePanel(true);
     }
   };
 
-  /* ── Error State ── */
   if (error) {
     return (
-      <div
-        style={{ fontFamily: "'Google Sans', sans-serif", background: '#202124' }}
-        className="h-screen flex flex-col items-center justify-center p-6 text-center text-white"
-      >
-        <div className="w-16 h-16 bg-[#ea4335]/10 text-[#ea4335] rounded-full flex items-center justify-center mb-5">
-          <ShieldAlert size={32} />
+      <div style={{
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: dark ? '#0D0B08' : '#F0E6D0',
+        padding: 32,
+        textAlign: 'center',
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+      }}>
+        <div style={{
+          width: 80, height: 80, borderRadius: '50%',
+          background: dark ? 'rgba(217,48,37,0.1)' : 'rgba(217,48,37,0.08)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: '#d93025',
+          marginBottom: 24,
+        }}>
+          <Shield size={40} />
         </div>
-        <h2 className="text-xl font-medium text-[#e8eaed] mb-2">Can't join meeting</h2>
-        <p className="text-[#9aa0a6] text-sm mb-8 max-w-sm leading-relaxed">{error}</p>
-        <button
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: dark ? '#F0E8D8' : '#0F0A04', marginBottom: 12 }}>
+          Cannot join meeting
+        </h2>
+        <p style={{ fontSize: '0.95rem', color: dark ? '#b8a080' : '#7A5A28', maxWidth: 400, lineHeight: 1.6, marginBottom: 28 }}>
+          {error}
+        </p>
+        <button 
           onClick={() => navigate('/')}
-          className="bg-[#1a73e8] hover:bg-[#1557b0] text-white px-6 py-2.5 rounded-full text-sm font-medium transition-colors"
+          style={{
+            padding: '12px 32px',
+            borderRadius: 24,
+            background: dark ? '#D4901A' : '#B8741A',
+            color: dark ? '#0D0B08' : '#F0E6D0',
+            border: 'none',
+            cursor: 'pointer',
+            fontWeight: 600,
+            fontSize: '0.95rem',
+            transition: 'opacity 0.2s',
+          }}
+          onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
+          onMouseLeave={e => e.currentTarget.style.opacity = '1'}
         >
           Return to Home
         </button>
@@ -92,96 +909,22 @@ const MeetingRoom = () => {
     );
   }
 
-  /* ── Loading State ── */
   if (!client || !call) {
-    return (
-      <div
-        style={{ fontFamily: "'Google Sans', sans-serif", background: '#202124' }}
-        className="h-screen flex flex-col items-center justify-center text-white gap-4"
-      >
-        <Loader2 className="animate-spin text-[#8ab4f8]" size={36} />
-        <p className="text-[#9aa0a6] text-sm">Joining the meeting…</p>
-      </div>
-    );
+    return <LoadingScreen dark={dark} />;
   }
 
-  /* ── Main Meeting UI ── */
   return (
     <StreamVideo client={client}>
       <StreamTheme>
         <StreamCall call={call}>
-          <div
-            style={{ fontFamily: "'Google Sans', sans-serif", background: '#202124' }}
-            className="h-screen flex flex-col overflow-hidden text-[#e8eaed]"
-          >
-            {/* Top Bar */}
-            <MeetingTopBar meetingId={meetingId} />
-
-            {/* Body */}
-            <main className="flex-1 flex relative overflow-hidden">
-              {/* Video area — shrinks when side panel is open */}
-              <div
-                className={`flex-1 flex flex-col transition-all duration-300 ease-in-out overflow-hidden ${
-                  isSidePanelOpen ? 'mr-[360px]' : 'mr-0'
-                }`}
-              >
-                {/* Video tiles — fill available space */}
-                <div className="flex-1 overflow-hidden relative">
-                  {/* Padding ensures tiles don't sit under top/bottom bars */}
-                  <div className="absolute inset-0 top-16 bottom-24">
-                    <SpeakerLayout />
-                  </div>
-                </div>
-              </div>
-
-              {/* Side Panel */}
-              <MeetingSidePanel
-                isOpen={isSidePanelOpen}
-                onClose={() => {
-                  setIsSidePanelOpen(false);
-                  setActivePanel(null);
-                }}
-              />
-            </main>
-
-            {/* Bottom Control Bar */}
-            <div className="absolute bottom-0 left-0 right-0 h-24 flex items-center justify-between px-6 z-30 pointer-events-none">
-              {/* Left spacer */}
-              <div className="flex-1" />
-
-              {/* Centre controls — Stream SDK provides mic/cam/end-call */}
-              <div className="pointer-events-auto flex items-center">
-                <CallControls onLeave={() => navigate('/')} />
-              </div>
-
-              {/* Right — People & Chat toggles */}
-              <div className="flex-1 flex items-center justify-end gap-1 pointer-events-auto">
-                <button
-                  onClick={() => togglePanel('participants')}
-                  title="Participants"
-                  className={`h-12 w-12 flex items-center justify-center rounded-full text-sm font-medium transition-colors ${
-                    activePanel === 'participants'
-                      ? 'bg-[#8ab4f8]/20 text-[#8ab4f8]'
-                      : 'text-[#e8eaed] hover:bg-white/10'
-                  }`}
-                >
-                  <UsersIcon size={20} />
-                </button>
-
-                <button
-                  onClick={() => togglePanel('chat')}
-                  title="Chat"
-                  className={`h-12 w-12 flex items-center justify-center rounded-full text-sm font-medium transition-colors ${
-                    activePanel === 'chat'
-                      ? 'bg-[#8ab4f8]/20 text-[#8ab4f8]'
-                      : 'text-[#e8eaed] hover:bg-white/10'
-                  }`}
-                >
-                  <MessageSquare size={20} />
-                </button>
-              </div>
-            </div>
-          </div>
+          <MeetingLayout
+            meetingId={meetingId}
+            isSidePanelOpen={isSidePanelOpen}
+            navigate={navigate}
+            togglePanel={togglePanel}
+            activePanel={activePanel}
+            dark={dark}
+          />
         </StreamCall>
       </StreamTheme>
     </StreamVideo>

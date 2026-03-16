@@ -13,6 +13,8 @@ connectDB();
 import authRoutes from './routes/authRoutes.js';
 import meetingRoutes from './routes/meetingRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import subscriptionRoutes from './routes/subscriptionRoutes.js';
+import cashfreeRoutes from './routes/cashfreeRoutes.js';
 
 const app = express();
 
@@ -21,10 +23,18 @@ app.use(helmet()); //helmet is used to secure the app by setting various HTTP he
 app.use(cors()); //cors is used to allow cross-origin requests
 app.use(express.json()); //express.json() is used to parse the incoming requests with JSON payloads
 
+// Logging middleware
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/meetings', meetingRoutes);
 app.use('/api/dashboard', userRoutes);
+app.use('/api/subscription', subscriptionRoutes);
+app.use('/api/cashfree', cashfreeRoutes);
 
 
 // Main Route

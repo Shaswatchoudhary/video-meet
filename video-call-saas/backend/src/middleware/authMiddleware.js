@@ -21,11 +21,18 @@ const protect = async (req, res, next) => {
   if (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = await User.findById(decoded.id).select('-password');
+      const user = await User.findById(decoded.id).select('-password');
+      
+      if (!user) {
+        console.warn('Authentication failed: User not found in database for token ID:', decoded.id);
+        return res.status(401).json({ message: 'User no longer exists. Please sign up or log in again.' });
+      }
+
+      req.user = user;
       console.log('Token Verified for User:', req.user._id);
       return next();
     } catch (error) {
-      console.error('JWT Error:', error.message);
+      console.error('JWT Verification Error:', error.message);
       return res.status(401).json({ message: 'Not authorized, token failed' });
     }
   }

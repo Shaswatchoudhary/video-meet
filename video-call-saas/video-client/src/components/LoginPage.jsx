@@ -131,7 +131,7 @@ const Field = ({ label, name, type = 'text', placeholder, value, onChange, icon:
 ════════════════════════════════════════════ */
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { login } = useAppContext();
+  const { login, axiosInstance } = useAppContext();
   const [formData, setFormData]     = useState({ email: '', password: '' });
   const [isLoading, setIsLoading]   = useState(false);
   const [errors, setErrors]         = useState({});
@@ -167,13 +167,12 @@ const LoginPage = () => {
 
     setIsLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: formData.email, password: formData.password }),
+      const res = await axiosInstance.post('/auth/login', {
+        email: formData.email,
+        password: formData.password,
       });
-      const data = await res.json();
-      if (res.ok) {
+      const data = res.data;
+      if (res.status === 200) {
         login({ name: data.name, email: data.email, _id: data._id }, data.token);
         setApiSuccess('Login successful! Redirecting…');
         setTimeout(() => navigate('/'), 1000);

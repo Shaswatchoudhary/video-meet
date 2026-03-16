@@ -78,8 +78,8 @@ const ControlButton = ({
             "0 0 0 10px rgba(234, 67, 53, 0)",
           ],
           scale: hovered ? 1.05 : 1
-        } : { 
-          scale: hovered ? 1.05 : 1 
+        } : {
+          scale: hovered ? 1.05 : 1
         }}
         transition={isMuted ? {
           duration: 1.5,
@@ -173,7 +173,7 @@ const TopBar = ({ meetingId, time, participantCount, dark, remainingTime }) => {
           </div>
           <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>VideoMeet</span>
         </div>
-        
+
         <button
           onClick={copyLink}
           style={{
@@ -195,8 +195,8 @@ const TopBar = ({ meetingId, time, participantCount, dark, remainingTime }) => {
 
       {/* Center - Time & Remaining & Participants */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-        <span style={{ 
-          fontSize: '0.9rem', 
+        <span style={{
+          fontSize: '0.9rem',
           color: dark ? '#b8a080' : '#7A5A28',
           fontFamily: "'Space Mono', monospace",
         }}>
@@ -251,12 +251,12 @@ const TopBar = ({ meetingId, time, participantCount, dark, remainingTime }) => {
 /* ── Bottom Bar (Google Meet style with proper mute indicators) ── */
 const BottomBar = ({ navigate, togglePanel, activePanel, meetingId, dark }) => {
   const call = useCall();
-  const { 
-    useMicrophoneState, 
-    useCameraState, 
+  const {
+    useMicrophoneState,
+    useCameraState,
     useScreenShareState,
     useLocalParticipant,
-    useParticipants 
+    useParticipants
   } = useCallStateHooks();
 
   const { isMuted: micMuted } = useMicrophoneState();
@@ -280,7 +280,7 @@ const BottomBar = ({ navigate, togglePanel, activePanel, meetingId, dark }) => {
       clearTimeout(timeout);
       timeout = setTimeout(() => setShowControls(false), 3000);
     };
-    
+
     document.addEventListener('mousemove', handleMouseMove);
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
@@ -333,7 +333,7 @@ const BottomBar = ({ navigate, togglePanel, activePanel, meetingId, dark }) => {
         ))}
       </AnimatePresence>
 
-      <motion.div 
+      <motion.div
         className="bottom-bar-container"
         initial={{ y: 100 }}
         animate={{ y: showControls ? 0 : 100 }}
@@ -406,15 +406,15 @@ const BottomBar = ({ navigate, togglePanel, activePanel, meetingId, dark }) => {
 
           {/* Reactions */}
           <div ref={reactRef} style={{ position: 'relative' }}>
-            <ControlButton 
-              title="Send a reaction" 
-              isActive={showReact} 
+            <ControlButton
+              title="Send a reaction"
+              isActive={showReact}
               onClick={() => setShowReact(o => !o)}
               dark={dark}
             >
               <Smile size={20} />
             </ControlButton>
-            
+
             <AnimatePresence>
               {showReact && (
                 <motion.div
@@ -577,7 +577,7 @@ const MeetingLayout = ({ meetingId, isSidePanelOpen, navigate, togglePanel, acti
   const [layout, setLayout] = useState('grid');
   const [remainingTime, setRemainingTime] = useState(null);
   const [showEndModal, setShowEndModal] = useState(false);
-  
+
   const { useParticipantCount } = useCallStateHooks();
   const participantCount = useParticipantCount();
   const call = useCall();
@@ -586,28 +586,28 @@ const MeetingLayout = ({ meetingId, isSidePanelOpen, navigate, togglePanel, acti
     // 1. Get host info and set limits
     const hostRaw = localStorage.getItem('meet_host_info');
     const hostInfo = hostRaw ? JSON.parse(hostRaw) : { plan: 'none' };
-    
+
     const limits = {
       none: 20 * 60,      // 20 mins
       aarambh: 60 * 60,   // 60 mins
       samraat: 24 * 60 * 60 // 24 hours
     };
-    
+
     const timeLimitSeconds = limits[hostInfo.plan] || (20 * 60);
     const joinTime = Date.now();
 
     const updateTime = () => {
       // Current Wall Clock
-      setTime(new Date().toLocaleTimeString([], { 
-        hour: '2-digit', 
+      setTime(new Date().toLocaleTimeString([], {
+        hour: '2-digit',
         minute: '2-digit',
-        hour12: true 
+        hour12: true
       }));
 
       // Meeting Duration Check
       const elapsedSeconds = Math.floor((Date.now() - joinTime) / 1000);
       const remaining = timeLimitSeconds - elapsedSeconds;
-      
+
       if (remaining <= 0) {
         setRemainingTime(0);
         handleMeetingEnd();
@@ -621,13 +621,13 @@ const MeetingLayout = ({ meetingId, isSidePanelOpen, navigate, togglePanel, acti
       call?.leave();
       setTimeout(() => navigate('/'), 5000);
     };
-    
+
     updateTime();
     const timer = setInterval(updateTime, 1000);
-    
+
     const handleLayoutChange = (e) => setLayout(e.detail);
     window.addEventListener('vm-layout', handleLayoutChange);
-    
+
     return () => {
       clearInterval(timer);
       window.removeEventListener('vm-layout', handleLayoutChange);
@@ -645,9 +645,9 @@ const MeetingLayout = ({ meetingId, isSidePanelOpen, navigate, togglePanel, acti
       fontFamily: "'Plus Jakarta Sans', sans-serif",
       position: 'relative',
     }}>
-      <TopBar 
-        meetingId={meetingId} 
-        time={time} 
+      <TopBar
+        meetingId={meetingId}
+        time={time}
         participantCount={participantCount}
         dark={dark}
         remainingTime={remainingTime}
@@ -765,15 +765,33 @@ const MeetingLayout = ({ meetingId, isSidePanelOpen, navigate, togglePanel, acti
           font-family: "'Space Mono', monospace" !important;
         }
 
+        /* ── FIXED: Muted indicators — covers all Stream SDK class name variants ── */
         .str-video__participant-view__audio-muted-indicator,
-        .str-video__participant-view__video-muted-indicator {
+        .str-video__participant-view__video-muted-indicator,
+        .str-video__participant-details__audio-muted,
+        .str-video__participant-details__video-muted,
+        [class*="audio-muted-indicator"],
+        [class*="video-muted-indicator"] {
           color: #fff !important;
           fill: #fff !important;
           background: #d93025 !important;
-          padding: 6px !important;
+          padding: 5px !important;
           border-radius: 50% !important;
           box-shadow: 0 4px 12px rgba(217, 48, 37, 0.45) !important;
           border: 2px solid rgba(255,255,255,0.3) !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+
+        /* Force SVGs inside muted indicators to be white */
+        [class*="audio-muted-indicator"] svg,
+        [class*="video-muted-indicator"] svg,
+        .str-video__participant-view__audio-muted-indicator svg,
+        .str-video__participant-view__video-muted-indicator svg {
+          color: #fff !important;
+          fill: #fff !important;
+          stroke: #fff !important;
         }
 
         .str-video__participant-view--speaking {
@@ -822,8 +840,8 @@ const MeetingRoom = () => {
       try {
         const client = new StreamVideoClient({
           apiKey,
-          user: { 
-            id: user._id || user.id, 
+          user: {
+            id: user._id || user.id,
             name: user.name,
             image: user.avatar,
           },
@@ -831,9 +849,9 @@ const MeetingRoom = () => {
         });
 
         const call = client.call('default', meetingId);
-        
+
         await call.join({ create: true });
-        
+
         setClient(client);
         setCall(call);
       } catch (err) {
@@ -892,7 +910,7 @@ const MeetingRoom = () => {
         <p style={{ fontSize: '0.95rem', color: dark ? '#b8a080' : '#7A5A28', maxWidth: 400, lineHeight: 1.6, marginBottom: 28 }}>
           {error}
         </p>
-        <button 
+        <button
           onClick={() => navigate('/')}
           style={{
             padding: '12px 32px',

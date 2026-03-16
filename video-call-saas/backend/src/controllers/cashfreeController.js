@@ -35,7 +35,7 @@ const createOrder = async (req, res) => {
 
     // Initialize Cashfree with credentials in constructor
     const cashfree = new Cashfree(
-      CFEnvironment.SANDBOX, 
+      process.env.CASHFREE_ENV === 'PRODUCTION' ? CFEnvironment.PRODUCTION : CFEnvironment.SANDBOX, 
       process.env.CASHFREE_APP_ID, 
       process.env.CASHFREE_SECRET_KEY
     );

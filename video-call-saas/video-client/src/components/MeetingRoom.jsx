@@ -76,27 +76,29 @@ const ControlButton = ({
           boxShadow: [
             "0 0 0 0px rgba(234, 67, 53, 0.4)",
             "0 0 0 10px rgba(234, 67, 53, 0)",
-          ]
-        } : {}}
+          ],
+          scale: hovered ? 1.05 : 1
+        } : { 
+          scale: hovered ? 1.05 : 1 
+        }}
         transition={isMuted ? {
           duration: 1.5,
           repeat: Infinity,
           ease: "easeInOut"
-        } : {}}
+        } : { duration: 0.2 }}
         style={{
           height: 48,
           width: 48,
           borderRadius: '50%',
           background: getBackgroundColor(),
-          border: isMuted ? '2px solid rgba(255,255,255,0.2)' : 'none',
+          border: isMuted ? '2.5px solid rgba(255,255,255,0.3)' : 'none',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          transition: 'background 0.2s, transform 0.1s',
+          transition: 'background 0.2s, box-shadow 0.2s',
           flexShrink: 0,
           color: '#fff',
-          transform: hovered ? 'scale(1.05)' : 'scale(1)',
           zIndex: 2,
         }}
       >
@@ -105,19 +107,21 @@ const ControlButton = ({
       {isMuted && (
         <div style={{
           position: 'absolute',
-          top: -18,
+          top: -20,
           left: '50%',
           transform: 'translateX(-50%)',
-          background: '#ea4335',
+          background: '#d93025',
           color: '#fff',
-          fontSize: '0.6rem',
-          fontWeight: 800,
-          padding: '2px 6px',
-          borderRadius: 4,
+          fontSize: '0.58rem',
+          fontWeight: 900,
+          padding: '3px 7px',
+          borderRadius: 6,
           fontFamily: "'Space Mono', monospace",
           pointerEvents: 'none',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-          zIndex: 3
+          boxShadow: '0 4px 10px rgba(217, 48, 37, 0.35)',
+          zIndex: 10,
+          letterSpacing: '0.05em',
+          whiteSpace: 'nowrap'
         }}>
           OFF
         </div>
@@ -167,7 +171,7 @@ const TopBar = ({ meetingId, time, participantCount, dark, remainingTime }) => {
           }}>
             <Video size={18} color={dark ? '#0F0A04' : '#F5E6C8'} />
           </div>
-          <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>VEDAC</span>
+          <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>VideoMeet</span>
         </div>
         
         <button
@@ -250,19 +254,20 @@ const BottomBar = ({ navigate, togglePanel, activePanel, meetingId, dark }) => {
   const { 
     useMicrophoneState, 
     useCameraState, 
+    useScreenShareState,
     useLocalParticipant,
     useParticipants 
   } = useCallStateHooks();
 
   const { isMuted: micMuted } = useMicrophoneState();
   const { isMuted: camMuted } = useCameraState();
+  const { isSharing } = useScreenShareState();
   const localParticipant = useLocalParticipant();
   const participants = useParticipants();
 
   const [showReact, setShowReact] = useState(false);
   const [handRaised, setHandRaised] = useState(false);
   const [floats, setFloats] = useState([]);
-  const [sharing, setSharing] = useState(false);
   const [layout, setLayout] = useState('grid');
   const [showControls, setShowControls] = useState(true);
   const reactRef = useRef(null);
@@ -295,12 +300,10 @@ const BottomBar = ({ navigate, togglePanel, activePanel, meetingId, dark }) => {
 
   const toggleShare = async () => {
     try {
-      if (!sharing) {
+      if (!isSharing) {
         await call?.screenShare?.enable();
-        setSharing(true);
       } else {
         await call?.screenShare?.disable();
-        setSharing(false);
       }
     } catch (e) {
       console.log('Screen share error:', e.message);
@@ -393,12 +396,12 @@ const BottomBar = ({ navigate, togglePanel, activePanel, meetingId, dark }) => {
 
           {/* Screen share */}
           <ControlButton
-            title={sharing ? 'Stop presenting' : 'Present now'}
-            isActive={sharing}
+            title={isSharing ? 'Stop presenting' : 'Present now'}
+            isActive={isSharing}
             onClick={toggleShare}
             dark={dark}
           >
-            <Monitor size={20} />
+            <Monitor size={20} color={isSharing ? '#34a853' : '#fff'} />
           </ControlButton>
 
           {/* Reactions */}
@@ -764,11 +767,13 @@ const MeetingLayout = ({ meetingId, isSidePanelOpen, navigate, togglePanel, acti
 
         .str-video__participant-view__audio-muted-indicator,
         .str-video__participant-view__video-muted-indicator {
-          color: #d93025 !important;
-          fill: #d93025 !important;
-          background: rgba(0, 0, 0, 0.6) !important;
-          padding: 4px !important;
+          color: #fff !important;
+          fill: #fff !important;
+          background: #d93025 !important;
+          padding: 6px !important;
           border-radius: 50% !important;
+          box-shadow: 0 4px 12px rgba(217, 48, 37, 0.45) !important;
+          border: 2px solid rgba(255,255,255,0.3) !important;
         }
 
         .str-video__participant-view--speaking {

@@ -649,16 +649,8 @@ const SubscriptionSection = ({ dark, textPrimary, textMuted, cardBg, cardBorder,
   }
 
   // "aarambh" or "samraat" — show active subscription
-  const handleUpgrade = async () => {
-    setUpgrading(true);
-    try {
-      const res = await axiosInstance.post('/subscription/upgrade', { plan: 'samraat' });
-      onSubInfoChange?.(res.data); // trigger refresh
-    } catch (err) {
-      alert(err?.response?.data?.message || 'Upgrade failed. Please try again.');
-    } finally {
-      setUpgrading(false);
-    }
+  const handleUpgrade = () => {
+    onSubscribe(plans[1]); // plans[1] is Samraat
   };
 
   const isPro = subInfo.plan === 'samraat';
@@ -873,6 +865,7 @@ const HomePage = () => {
   const [subModal, setSubModal]             = useState(null);
   const [subInfo, setSubInfo]               = useState(null);   // null=loading, {plan,startDate,expiryDate,daysRemaining}
   const [subLoading, setSubLoading]         = useState(false);
+  const [scheduledMtg, setScheduledMtg]     = useState(null);
   const inputRef = useRef(null);
   const scrollRef = useRef(null);
 
@@ -928,10 +921,14 @@ const HomePage = () => {
     setIsCreating(true);
     try {
       const meetId = Math.random().toString(36).substring(2, 10);
-      const res = await axiosInstance.post('/meetings/create', { meetId, title: title || 'Scheduled Meeting' });
-      localStorage.setItem('stream_token', res.data.token);
-      navigate(`/meeting/${res.data.meetId}`);
-    } catch { alert('Failed to create scheduled meeting.'); }
+      const scheduledAt = new Date(`${date}T${time || '00:00'}`);
+      const res = await axiosInstance.post('/meetings/schedule', { 
+        meetId, 
+        title: title || 'Scheduled Meeting',
+        scheduledAt
+      });
+      setScheduledMtg(res.data);
+    } catch { alert('Failed to schedule meeting.'); }
     finally { setIsCreating(false); }
   };
 
@@ -1141,7 +1138,7 @@ const HomePage = () => {
                   </div>
                   <div>
                     <div style={{ fontSize:'0.68rem', color: textMuted, fontWeight:500, transition:'color 0.4s' }}>Welcome back</div>
-                    <div style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontSize:'0.95rem', fontWeight:700, color: textPrimary, transition:'color 0.4s' }}>{user?.name}</div>
+                    <div style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:700, fontSize:'0.95rem', color: textPrimary, transition:'color 0.4s' }}>{user?.name}</div>
                   </div>
                 </div>
 
@@ -1248,6 +1245,21 @@ const HomePage = () => {
             onSuccess={handleSubscribeStart}
           />
         )}
+
+        {/* Scheduled Success Modal */}
+        <AnimatePresence>
+          {scheduledMtg && (
+            <ScheduledSuccessModal 
+              mtg={scheduledMtg} 
+              dark={dark} 
+              onClose={() => setScheduledMtg(null)} 
+              textPrimary={textPrimary}
+              textMuted={textMuted}
+              cardBg={dark?'rgba(18,14,8,0.98)':'rgba(253,249,241,0.98)'}
+              cardBorder={accentColor}
+            />
+          )}
+        </AnimatePresence>
       </div>
 
       <style>{`

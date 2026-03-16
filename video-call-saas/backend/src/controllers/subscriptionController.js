@@ -41,9 +41,7 @@ const startSubscription = async (req, res) => {
   }
 };
 
-// @desc    Get subscription status
-// @route   GET /api/subscription/status
-// @access  Private
+//get subscription status
 const getSubscriptionStatus = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -107,7 +105,7 @@ const upgradeSubscription = async (req, res) => {
 
     currentEnd.setDate(currentEnd.getDate() + durationDays);
 
-    user.subscriptionPlan = targetPlan; 
+    user.subscriptionPlan = targetPlan;
     // If upgrading from none/expired, set start date to today
     if (!user.subscriptionStart || user.subscriptionEnd < now) {
       user.subscriptionStart = now;

@@ -3,9 +3,7 @@ import User from '../models/User.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// @desc    Create Cashfree Order
-// @route   POST /api/cashfree/create-order
-// @access  Private
+
 const createOrder = async (req, res) => {
   try {
     const { plan, amount } = req.body;
@@ -35,13 +33,13 @@ const createOrder = async (req, res) => {
 
     // Initialize Cashfree with credentials in constructor
     const cashfree = new Cashfree(
-      process.env.CASHFREE_ENV === 'PRODUCTION' ? CFEnvironment.PRODUCTION : CFEnvironment.SANDBOX, 
-      process.env.CASHFREE_APP_ID, 
+      process.env.CASHFREE_ENV === 'PRODUCTION' ? CFEnvironment.PRODUCTION : CFEnvironment.SANDBOX,
+      process.env.CASHFREE_APP_ID,
       process.env.CASHFREE_SECRET_KEY
     );
 
     const response = await cashfree.PGCreateOrder(request);
-    
+
     if (response && response.data) {
       res.json({
         payment_session_id: response.data.payment_session_id,
@@ -53,23 +51,21 @@ const createOrder = async (req, res) => {
     }
   } catch (error) {
     console.error('Error creating Cashfree order:', error.response?.data || error.message);
-    res.status(500).json({ 
-      message: 'Cashfree Order Error', 
-      error: error.response?.data?.message || error.message 
+    res.status(500).json({
+      message: 'Cashfree Order Error',
+      error: error.response?.data?.message || error.message
     });
   }
 };
 
-// @desc    Verify Cashfree Payment
-// @route   POST /api/cashfree/verify
-// @access  Private
+//verify payment
 const verifyPayment = async (req, res) => {
   try {
     const { order_id, plan, period = 'yearly' } = req.body;
-    
+
     const cashfree = new Cashfree(
-      CFEnvironment.SANDBOX, 
-      process.env.CASHFREE_APP_ID, 
+      CFEnvironment.SANDBOX,
+      process.env.CASHFREE_APP_ID,
       process.env.CASHFREE_SECRET_KEY
     );
 
@@ -82,7 +78,7 @@ const verifyPayment = async (req, res) => {
     if (successfulPayment) {
       // Update user subscription
       const user = await User.findById(req.user._id);
-      
+
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
@@ -112,7 +108,7 @@ const verifyPayment = async (req, res) => {
       user.amountPaid = successfulPayment.payment_amount;
       user.paymentId = successfulPayment.cf_payment_id;
       user.orderId = order_id;
-      
+
       if (!user.subscriptionStart || new Date(user.subscriptionEnd) < now) {
         user.subscriptionStart = now;
       }

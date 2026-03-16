@@ -4,9 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import https from 'https';
 import axios from 'axios';
 
-// @desc    Initiate Paytm Transaction
-// @route   POST /api/paytm/initiate
-// @access  Private
+
 const initiateTransaction = async (req, res) => {
   try {
     const { plan, amount } = req.body;
@@ -17,12 +15,12 @@ const initiateTransaction = async (req, res) => {
 
     const mid = process.env.PAYTM_MID?.trim();
     const mkey = process.env.PAYTM_MERCHANT_KEY?.trim();
-    const orderId = `VM_ORD_${Date.now()}`; 
+    const orderId = `VM_ORD_${Date.now()}`;
 
     console.log('--- Paytm Initiation (v1 Handshake) ---');
     console.log('MID:', mid);
     console.log('OrderId:', orderId);
-    
+
     // Explicitly including all params confirmed by user
     const bodyObj = {
       requestType: "Payment",
@@ -45,11 +43,11 @@ const initiateTransaction = async (req, res) => {
     const checksum = await PaytmChecksum.generateSignature(bodyString, mkey);
 
     const payload = {
-        body: bodyObj,
-        head: {
-            signature: checksum,
-            version: "v1"
-        }
+      body: bodyObj,
+      head: {
+        signature: checksum,
+        version: "v1"
+      }
     };
 
     console.log('Final Payload:', JSON.stringify(payload));
@@ -58,11 +56,11 @@ const initiateTransaction = async (req, res) => {
       const response = await axios.post(
         `https://securegw-stage.paytm.in/theia/api/v1/initiateTransaction?mid=${mid}&orderId=${orderId}`,
         payload,
-        { 
-          headers: { 
+        {
+          headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
-          } 
+          }
         }
       );
 
@@ -80,18 +78,18 @@ const initiateTransaction = async (req, res) => {
       } else {
         const msg = result.body?.resultInfo?.resultMsg || 'System Error / Configuration Error';
         console.error('Paytm Initiation Failed:', result.body?.resultInfo);
-        res.status(500).json({ 
-            message: 'Paytm Error: ' + msg,
-            code: result.body?.resultInfo?.resultCode,
-            detail: result 
+        res.status(500).json({
+          message: 'Paytm Error: ' + msg,
+          code: result.body?.resultInfo?.resultCode,
+          detail: result
         });
       }
     } catch (apiError) {
       console.error('Paytm API Request Error:', apiError.response?.data || apiError.message);
-      res.status(500).json({ 
-        message: 'Paytm API Connection Error', 
+      res.status(500).json({
+        message: 'Paytm API Connection Error',
         error: apiError.message,
-        detail: apiError.response?.data 
+        detail: apiError.response?.data
       });
     }
 
@@ -110,15 +108,15 @@ const handleCallback = async (req, res) => {
     // Note: In a real production app, Paytm sends POST data to the callback URL.
     // For local testing with Checkout JS, we might handle verification differently or via status polling.
     // However, this is the standard structure.
-    
+
     const { ORDERID, STATUS, TXNAMOUNT } = req.body;
 
     if (STATUS === 'TXN_SUCCESS') {
-        // Ideally, we'd verify the checksum here again from the callback body
-        // and check the transaction status via Paytm API to be 100% sure.
-        
-        // Update user (logic to find user might need to be linked via metadata or session if callback is server-to-server)
-        // For this demo/test integration, we will also provide a verify route for the frontend to call.
+      // Ideally, we'd verify the checksum here again from the callback body
+      // and check the transaction status via Paytm API to be 100% sure.
+
+      // Update user (logic to find user might need to be linked via metadata or session if callback is server-to-server)
+      // For this demo/test integration, we will also provide a verify route for the frontend to call.
     }
 
     res.json(req.body);
@@ -134,10 +132,10 @@ const handleCallback = async (req, res) => {
 const verifyTransaction = async (req, res) => {
   try {
     const { orderId, plan } = req.body;
-    
+
     // In test mode, we'll simulate a successful verification if the order exists
     // and ideally we'd call Paytm's Transaction Status API here.
-    
+
     const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -160,7 +158,7 @@ const verifyTransaction = async (req, res) => {
       user.subscriptionStart = now;
     }
     user.subscriptionEnd = currentEnd;
-    
+
     await user.save();
 
     res.json({

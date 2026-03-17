@@ -147,31 +147,24 @@ const TopBar = ({ meetingId, time, participantCount, dark, remainingTime }) => {
   };
 
   return (
-    <div style={{
-      height: 64,
-      background: dark ? 'rgba(13,11,8,0.95)' : 'rgba(240,230,208,0.95)',
-      backdropFilter: 'blur(18px)',
-      borderBottom: `1px solid ${dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.18)'}`,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '0 24px',
-      color: dark ? '#F0E8D8' : '#0F0A04',
-      flexShrink: 0,
-      zIndex: 10,
-      fontFamily: "'Plus Jakarta Sans', sans-serif",
-    }}>
+    <div className="h-16 px-4 md:px-6 flex items-center justify-between backdrop-blur-lg border-b shrink-0 z-10 transition-all"
+      style={{
+        background: dark ? 'rgba(13,11,8,0.95)' : 'rgba(240,230,208,0.95)',
+        borderBottomColor: dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.18)',
+        color: dark ? '#F0E8D8' : '#0F0A04',
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+      }}>
       {/* Left - Logo & Meeting ID */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div className="flex items-center gap-4 md:gap-6">
+        <div className="flex items-center gap-2">
           <div style={{
-            width: 36, height: 36, borderRadius: 10,
+            width: 32, height: 32, borderRadius: 8,
             background: dark ? '#F0E8D8' : '#0F0A04',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <Video size={18} color={dark ? '#0F0A04' : '#F5E6C8'} />
+            <Video size={16} color={dark ? '#0F0A04' : '#F5E6C8'} />
           </div>
-          <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>VideoMeet</span>
+          <span className="hidden sm:inline font-bold text-lg">VideoMeet</span>
         </div>
 
         <button
@@ -231,16 +224,12 @@ const TopBar = ({ meetingId, time, participantCount, dark, remainingTime }) => {
       </div>
 
       {/* Right - Security Badge */}
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 6,
-        background: dark ? 'rgba(52,168,83,0.1)' : 'rgba(52,168,83,0.08)',
-        border: `1px solid ${dark ? 'rgba(52,168,83,0.3)' : 'rgba(52,168,83,0.25)'}`,
-        borderRadius: 20,
-        padding: '6px 12px',
-        color: '#34a853',
-        fontSize: '0.75rem',
-        fontFamily: "'Space Mono', monospace",
-      }}>
+      <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-mono"
+        style={{
+          background: dark ? 'rgba(52,168,83,0.1)' : 'rgba(52,168,83,0.08)',
+          borderColor: dark ? 'rgba(52,168,83,0.3)' : 'rgba(52,168,83,0.25)',
+          color: '#34a853',
+        }}>
         <Shield size={14} />
         <span>End-to-end encrypted</span>
       </div>
@@ -334,205 +323,192 @@ const BottomBar = ({ navigate, togglePanel, activePanel, meetingId, dark }) => {
       </AnimatePresence>
 
       <motion.div
-        className="bottom-bar-container"
+        className="fixed bottom-0 left-0 right-0 z-50 transition-transform duration-300"
         initial={{ y: 100 }}
         animate={{ y: showControls ? 0 : 100 }}
-        transition={{ duration: 0.3 }}
         style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: 80,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
           pointerEvents: showControls ? 'auto' : 'none',
-          zIndex: 50,
         }}
       >
-        <div style={{
-          background: dark ? 'rgba(13,11,8,0.95)' : 'rgba(240,230,208,0.95)',
-          backdropFilter: 'blur(18px)',
-          border: `1px solid ${dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.18)'}`,
-          borderRadius: 40,
-          padding: '8px 16px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-          boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-        }}>
+        <div className="flex justify-center items-center px-4 pb-4">
+          <div className="flex items-center gap-2 p-2 rounded-[40px] shadow-2xl backdrop-blur-xl border overflow-x-auto max-w-full no-scrollbar"
+            style={{
+              background: dark ? 'rgba(13,11,8,0.95)' : 'rgba(240,230,208,0.95)',
+              borderColor: dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.18)',
+            }}>
 
-          {/* Layout toggle */}
-          <ControlButton
-            title={layout === 'grid' ? 'Switch to speaker view' : 'Switch to grid view'}
-            onClick={cycleLayout}
-            dark={dark}
-          >
-            {layout === 'grid' ? <LayoutPanelLeft size={20} /> : <LayoutGrid size={20} />}
-          </ControlButton>
-
-          <div style={{ width: 1, height: 32, background: dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.18)' }} />
-
-          {/* Mic - Turns RED when muted (Google Meet style) */}
-          <ControlButton
-            title={micMuted ? 'Unmute microphone (Ctrl+D)' : 'Mute microphone (Ctrl+D)'}
-            isMuted={micMuted}
-            onClick={() => call?.microphone.toggle()}
-            dark={dark}
-          >
-            {micMuted ? <MicOff size={20} /> : <Mic size={20} />}
-          </ControlButton>
-
-          {/* Camera - Turns RED when off */}
-          <ControlButton
-            title={camMuted ? 'Turn on camera (Ctrl+E)' : 'Turn off camera (Ctrl+E)'}
-            isMuted={camMuted}
-            onClick={() => call?.camera.toggle()}
-            dark={dark}
-          >
-            {camMuted ? <VideoOff size={20} /> : <Video size={20} />}
-          </ControlButton>
-
-          {/* Screen share */}
-          <ControlButton
-            title={isSharing ? 'Stop presenting' : 'Present now'}
-            isActive={isSharing}
-            onClick={toggleShare}
-            dark={dark}
-          >
-            <Monitor size={20} color={isSharing ? '#34a853' : '#fff'} />
-          </ControlButton>
-
-          {/* Reactions */}
-          <div ref={reactRef} style={{ position: 'relative' }}>
+            {/* Layout toggle */}
             <ControlButton
-              title="Send a reaction"
-              isActive={showReact}
-              onClick={() => setShowReact(o => !o)}
+              title={layout === 'grid' ? 'Switch to speaker view' : 'Switch to grid view'}
+              onClick={cycleLayout}
               dark={dark}
             >
-              <Smile size={20} />
+              {layout === 'grid' ? <LayoutPanelLeft size={20} /> : <LayoutGrid size={20} />}
             </ControlButton>
 
-            <AnimatePresence>
-              {showReact && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.9 }}
-                  style={{
-                    position: 'absolute',
-                    bottom: 'calc(100% + 10px)',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    background: dark ? 'rgba(18,13,8,0.97)' : 'rgba(253,249,241,0.97)',
-                    backdropFilter: 'blur(10px)',
-                    border: `1px solid ${dark ? 'rgba(255,200,100,0.14)' : 'rgba(180,130,70,0.25)'}`,
-                    borderRadius: 36,
-                    padding: '8px 14px',
-                    display: 'flex',
-                    gap: 4,
-                    boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
-                    zIndex: 200,
-                  }}
-                >
-                  {REACTIONS.map(e => (
-                    <button
-                      key={e}
-                      onClick={() => { sendReaction(e); setShowReact(false); }}
-                      style={{
-                        fontSize: '1.5rem',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        padding: '4px 6px',
-                        borderRadius: 8,
-                        transition: 'transform 0.12s',
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.35)'}
-                      onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-                    >
-                      {e}
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <div style={{ width: 1, height: 32, background: dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.18)' }} />
+
+            {/* Mic - Turns RED when muted (Google Meet style) */}
+            <ControlButton
+              title={micMuted ? 'Unmute microphone (Ctrl+D)' : 'Mute microphone (Ctrl+D)'}
+              isMuted={micMuted}
+              onClick={() => call?.microphone.toggle()}
+              dark={dark}
+            >
+              {micMuted ? <MicOff size={20} /> : <Mic size={20} />}
+            </ControlButton>
+
+            {/* Camera - Turns RED when off */}
+            <ControlButton
+              title={camMuted ? 'Turn on camera (Ctrl+E)' : 'Turn off camera (Ctrl+E)'}
+              isMuted={camMuted}
+              onClick={() => call?.camera.toggle()}
+              dark={dark}
+            >
+              {camMuted ? <VideoOff size={20} /> : <Video size={20} />}
+            </ControlButton>
+
+            {/* Screen share */}
+            <ControlButton
+              title={isSharing ? 'Stop presenting' : 'Present now'}
+              isActive={isSharing}
+              onClick={toggleShare}
+              dark={dark}
+            >
+              <Monitor size={20} color={isSharing ? '#34a853' : '#fff'} />
+            </ControlButton>
+
+            {/* Reactions */}
+            <div ref={reactRef} style={{ position: 'relative' }}>
+              <ControlButton
+                title="Send a reaction"
+                isActive={showReact}
+                onClick={() => setShowReact(o => !o)}
+                dark={dark}
+              >
+                <Smile size={20} />
+              </ControlButton>
+
+              <AnimatePresence>
+                {showReact && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                    style={{
+                      position: 'absolute',
+                      bottom: 'calc(100% + 10px)',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      background: dark ? 'rgba(18,13,8,0.97)' : 'rgba(253,249,241,0.97)',
+                      backdropFilter: 'blur(10px)',
+                      border: `1px solid ${dark ? 'rgba(255,200,100,0.14)' : 'rgba(180,130,70,0.25)'}`,
+                      borderRadius: 36,
+                      padding: '8px 14px',
+                      display: 'flex',
+                      gap: 4,
+                      boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+                      zIndex: 200,
+                    }}
+                  >
+                    {REACTIONS.map(e => (
+                      <button
+                        key={e}
+                        onClick={() => { sendReaction(e); setShowReact(false); }}
+                        style={{
+                          fontSize: '1.5rem',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          padding: '4px 6px',
+                          borderRadius: 8,
+                          transition: 'transform 0.12s',
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.35)'}
+                        onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                      >
+                        {e}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Raise hand */}
+            <ControlButton
+              title={handRaised ? 'Lower hand' : 'Raise hand'}
+              isActive={handRaised}
+              onClick={toggleHand}
+              dark={dark}
+            >
+              <Hand size={20} />
+            </ControlButton>
+
+            <div style={{ width: 1, height: 32, background: dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.18)' }} />
+
+            {/* People panel */}
+            <ControlButton
+              title={`People (${participants.length})`}
+              isActive={activePanel === 'participants'}
+              onClick={() => togglePanel('participants')}
+              dark={dark}
+            >
+              <Users size={20} />
+            </ControlButton>
+
+            {/* Chat panel */}
+            <ControlButton
+              title="Chat"
+              isActive={activePanel === 'chat'}
+              onClick={() => togglePanel('chat')}
+              dark={dark}
+            >
+              <MessageSquare size={20} />
+            </ControlButton>
+
+            {/* More options — only visible to others */}
+            {participants.length > 1 && (
+              <ControlButton title="More options" onClick={() => {}} dark={dark}>
+                <MoreVertical size={20} />
+              </ControlButton>
+            )}
+
+            <div style={{ width: 1, height: 32, background: dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.18)' }} />
+
+            {/* Leave call - Always red */}
+            <button
+              title="Leave call"
+              onClick={endCall}
+              style={{
+                height: 48,
+                padding: '0 24px',
+                borderRadius: 24,
+                background: '#d93025',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                color: '#fff',
+                fontWeight: 600,
+                fontSize: '0.9rem',
+                transition: 'background 0.2s, transform 0.1s',
+                flexShrink: 0
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = '#b31412';
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = '#d93025';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              <PhoneOff size={20} />
+              <span>Leave</span>
+            </button>
           </div>
-
-          {/* Raise hand */}
-          <ControlButton
-            title={handRaised ? 'Lower hand' : 'Raise hand'}
-            isActive={handRaised}
-            onClick={toggleHand}
-            dark={dark}
-          >
-            <Hand size={20} />
-          </ControlButton>
-
-          <div style={{ width: 1, height: 32, background: dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.18)' }} />
-
-          {/* People panel */}
-          <ControlButton
-            title={`People (${participants.length})`}
-            isActive={activePanel === 'participants'}
-            onClick={() => togglePanel('participants')}
-            dark={dark}
-          >
-            <Users size={20} />
-          </ControlButton>
-
-          {/* Chat panel */}
-          <ControlButton
-            title="Chat"
-            isActive={activePanel === 'chat'}
-            onClick={() => togglePanel('chat')}
-            dark={dark}
-          >
-            <MessageSquare size={20} />
-          </ControlButton>
-
-          {/* More options — only visible to others */}
-          {participants.length > 1 && (
-            <ControlButton title="More options" onClick={() => {}} dark={dark}>
-              <MoreVertical size={20} />
-            </ControlButton>
-          )}
-
-          <div style={{ width: 1, height: 32, background: dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.18)' }} />
-
-          {/* Leave call - Always red */}
-          <button
-            title="Leave call"
-            onClick={endCall}
-            style={{
-              height: 48,
-              padding: '0 24px',
-              borderRadius: 24,
-              background: '#d93025',
-              border: 'none',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              color: '#fff',
-              fontWeight: 600,
-              fontSize: '0.9rem',
-              transition: 'background 0.2s, transform 0.1s',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = '#b31412';
-              e.currentTarget.style.transform = 'scale(1.05)';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = '#d93025';
-              e.currentTarget.style.transform = 'scale(1)';
-            }}
-          >
-            <PhoneOff size={20} />
-            <span>Leave</span>
-          </button>
         </div>
       </motion.div>
     </>
@@ -659,11 +635,7 @@ const MeetingLayout = ({ meetingId, isSidePanelOpen, navigate, togglePanel, acti
         position: 'relative',
         overflow: 'hidden',
       }}>
-        <div style={{
-          flex: 1,
-          transition: 'margin-right 0.3s ease',
-          marginRight: isSidePanelOpen ? 360 : 0,
-        }}>
+        <div className={`flex-1 transition-all duration-300 ${isSidePanelOpen ? 'md:mr-[360px]' : 'mr-0'}`}>
           {layout === 'grid' ? <PaginatedGridLayout /> : <SpeakerLayout />}
         </div>
 
@@ -683,16 +655,14 @@ const MeetingLayout = ({ meetingId, isSidePanelOpen, navigate, togglePanel, acti
         dark={dark}
       />
 
-      {/* Meeting Ended Modal */}
       <AnimatePresence>
         {showEndModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
+            className="fixed inset-0 z-[1000] flex items-center justify-center p-6"
             style={{
-              position: 'fixed', inset: 0, zIndex: 1000,
               background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(10px)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}
           >
             <motion.div

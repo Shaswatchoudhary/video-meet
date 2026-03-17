@@ -35,6 +35,7 @@ const HoneycombBg = ({ dark }) => {
   }
   return (
     <svg style={{ position: 'fixed', left: 0, top: 0, width: 480, height: '100vh', pointerEvents: 'none', zIndex: 0 }}
+      className="hidden md:block"
       viewBox="0 0 480 900" preserveAspectRatio="xMinYMid slice">
       {hexes}
     </svg>
@@ -428,7 +429,7 @@ const ActiveSubscriptionPanel = ({ subInfo, dark, textPrimary, textMuted, cardBg
 
       {/* Stats row */}
       <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 22,
+        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12, marginBottom: 22,
       }}>
         {[
           {
@@ -630,7 +631,7 @@ const SubscriptionSection = ({ dark, textPrimary, textMuted, cardBg, cardBorder,
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, maxWidth: 920, margin: '0 auto' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[920px] mx-auto">
           {plans.map(plan => (
             <PlanCard key={plan.id} plan={plan} dark={dark} textPrimary={textPrimary} textMuted={textMuted} cardBg={cardBg} cardBorder={cardBorder} onSubscribe={onSubscribe} />
           ))}
@@ -678,7 +679,7 @@ const SubscriptionSection = ({ dark, textPrimary, textMuted, cardBg, cardBorder,
       </div>
 
       {/* Content grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: isPro ? '1fr' : '1fr 1fr', gap: 24, maxWidth: isPro ? 720 : 960, margin: '0 auto' }}>
+      <div className={`grid gap-6 mx-auto ${isPro ? 'max-w-[720px] grid-cols-1' : 'max-w-[960px] grid-cols-1 md:grid-cols-2'}`}>
         <ActiveSubscriptionPanel
           subInfo={subInfo} dark={dark}
           textPrimary={textPrimary} textMuted={textMuted}
@@ -1049,15 +1050,8 @@ const HomePage = () => {
           className="hp-scroll"
           style={{ flex:1, overflowY:'auto', overflowX:'hidden', position:'relative' }}
         >
-          {/* ── HERO SECTION (full viewport height) ── */}
-          <div style={{
-            minHeight: 'calc(100vh - 62px)',
-            display: 'grid', gridTemplateColumns: '1fr 380px',
-            gap: 32, padding: '0 44px 24px',
-            alignItems: 'center',
-            maxWidth: 1300, margin: '0 auto', width: '100%',
-            position: 'relative', zIndex: 1,
-          }}>
+          {/* ── HERO SECTION ── */}
+          <div className="min-h-[calc(100vh-62px)] flex flex-col md:grid md:grid-cols-[1fr_380px] gap-8 md:gap-12 px-5 md:px-11 pb-6 items-center max-w-[1300px] mx-auto w-full relative z-10">
 
             {/* LEFT */}
             <motion.div initial={{ opacity:0, y:22 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.65, ease:[0.22,1,0.36,1] }}>
@@ -1098,9 +1092,11 @@ const HomePage = () => {
               </div>
 
               {/* Stats */}
-              <div style={{ display:'flex', alignItems:'stretch', marginTop:40, paddingTop:24, borderTop:`1px solid ${statDiv}`, transition:'border-color 0.4s' }}>
+              <div className="flex flex-wrap items-stretch mt-10 pt-6 border-t transition-all duration-400"
+                style={{ borderTopColor: statDiv }}>
                 {[{val:'99.9%',lbl:'Uptime'},{val:'<80ms',lbl:'Avg Latency'},{val:'256-bit',lbl:'Encryption'},{val:'1–100',lbl:'Participants'}].map(({val,lbl},i) => (
-                  <div key={lbl} style={{ display:'flex', flexDirection:'column', paddingLeft:i===0?0:20, paddingRight:20, borderRight:i<3?`1px solid ${statDiv}`:'none', transition:'border-color 0.4s' }}>
+                  <div key={lbl} className={`flex flex-col pr-5 ${i === 0 ? 'pl-0' : 'pl-5'} ${i < 3 ? 'border-r' : 'border-none'} transition-all duration-400 mb-4 md:mb-0`}
+                    style={{ borderRightColor: statDiv }}>
                     <span style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontSize:'1.3rem', fontWeight:800, color: textPrimary, letterSpacing:'-0.02em', transition:'color 0.4s' }}>{val}</span>
                     <span style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.55rem', color: textMuted, letterSpacing:'0.12em', textTransform:'uppercase', marginTop:2, transition:'color 0.4s' }}>{lbl}</span>
                   </div>
@@ -1125,9 +1121,9 @@ const HomePage = () => {
               </button>
             </motion.div>
 
-            {/* RIGHT — quick actions + recent meetings (unchanged) */}
+            {/* RIGHT — quick actions + recent meetings */}
             <motion.div initial={{ opacity:0, x:26 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.7, delay:0.12, ease:[0.22,1,0.36,1] }}
-              style={{ display:'flex', flexDirection:'column', gap:12, height:'100%', maxHeight:'calc(100vh - 120px)', paddingTop:16 }}>
+              className="flex flex-col gap-3 w-full max-w-[380px] md:h-full md:max-h-[calc(100vh-120px)] pt-4 md:pt-4">
 
               {/* Quick actions */}
               <div style={{ background: cardBg, border:`1px solid ${cardBorder}`, borderRadius:20, backdropFilter:'blur(20px)', padding:'20px 20px 16px', transition:'all 0.4s' }}>

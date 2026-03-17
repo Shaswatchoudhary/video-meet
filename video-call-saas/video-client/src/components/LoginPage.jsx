@@ -32,6 +32,7 @@ const HoneycombBg = () => {
   }
   return (
     <svg style={{ position:'fixed', left:0, top:0, width:480, height:'100vh', pointerEvents:'none', zIndex:0 }}
+      className="hidden md:block"
       viewBox="0 0 480 900" preserveAspectRatio="xMinYMid slice">
       {hexes}
     </svg>
@@ -211,12 +212,11 @@ const LoginPage = () => {
         <div style={{ position:'fixed', inset:0, zIndex:0, pointerEvents:'none', background:'radial-gradient(ellipse 45% 55% at 98% 40%, rgba(252,240,210,0.8) 0%, transparent 65%)' }} />
 
         {/* ── NAVBAR ── */}
-        <nav style={{
-          position:'relative', zIndex:20, height:62, padding:'0 40px',
-          display:'flex', alignItems:'center', justifyContent:'space-between',
-          borderBottom:'1px solid rgba(180,130,70,0.18)',
-          background:'rgba(240,230,208,0.82)', backdropFilter:'blur(18px)', flexShrink:0,
-        }}>
+        <nav className="relative z-[20] h-16 px-6 md:px-10 flex items-center justify-between border-b backdrop-blur-xl shrink-0"
+          style={{
+            borderColor: 'rgba(180,130,70,0.18)',
+            background: 'rgba(240,230,208,0.82)',
+          }}>
           <div style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer' }} onClick={() => navigate('/')}>
             <div style={{ width:36, height:36, borderRadius:10, background:'#0F0A04', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 2px 14px rgba(15,10,4,0.22)', position:'relative' }}>
               <Video size={17} color="#F5E6C8" strokeWidth={2} />
@@ -236,8 +236,8 @@ const LoginPage = () => {
         </nav>
 
         {/* ── BODY ── */}
-        <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'32px 24px', position:'relative', zIndex:1 }}>
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 420px', gap:64, alignItems:'center', maxWidth:960, width:'100%' }}>
+        <div className="flex-1 flex items-center justify-center p-6 md:p-8 relative z-[1]">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-12 lg:gap-16 items-center max-w-5xl w-full">
 
             {/* LEFT: brand */}
             <motion.div initial={{ opacity:0, x:-24 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.65, ease:[0.22,1,0.36,1] }}>

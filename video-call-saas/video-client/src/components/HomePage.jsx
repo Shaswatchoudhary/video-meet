@@ -1051,22 +1051,36 @@ const HomePage = () => {
           style={{ flex:1, overflowY:'auto', overflowX:'hidden', position:'relative' }}
         >
           {/* ── HERO SECTION ── */}
-          <div className="min-h-[calc(100vh-62px)] flex flex-col md:grid md:grid-cols-[1fr_380px] gap-8 md:gap-12 px-5 md:px-11 pb-6 items-center max-w-[1300px] mx-auto w-full relative z-10">
+          <div className="min-h-[calc(100vh-80px)] flex flex-col items-center justify-center gap-10 px-6 py-12 md:py-20 max-w-[1200px] mx-auto w-full relative z-10 text-center">
 
-            {/* LEFT */}
-            <motion.div initial={{ opacity:0, y:22 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.65, ease:[0.22,1,0.36,1] }}>
+            <motion.div 
+              initial={{ opacity:0, y:22 }} 
+              animate={{ opacity:1, y:0 }} 
+              transition={{ duration:0.65, ease:[0.22,1,0.36,1] }}
+              className="flex flex-col items-center max-w-[800px]"
+            >
               <AnimatedBorderBadge dark={dark} />
-              <h1 style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontSize:'clamp(2.6rem, 4.8vw, 4.4rem)', fontWeight:800, lineHeight:1.05, letterSpacing:'-0.03em', color: textPrimary, marginBottom:20, transition:'color 0.4s' }}>
+              <h1 style={{ 
+                fontFamily:"'Plus Jakarta Sans', sans-serif", 
+                fontSize:'clamp(2.8rem, 6vw, 5rem)', 
+                fontWeight:800, lineHeight:1.02, letterSpacing:'-0.04em', 
+                color: textPrimary, marginBottom:24, 
+                transition:'color 0.4s' 
+              }}>
                 Video meetings,<br />
                 <span style={{ color: accentColor, transition:'color 0.4s' }}>done right.</span>
               </h1>
-              <p style={{ fontSize:'clamp(0.88rem, 1.35vw, 1.02rem)', color: textSecondary, lineHeight:1.78, fontWeight:400, maxWidth:480, transition:'color 0.4s' }}>
+              <p style={{ 
+                fontSize:'clamp(1rem, 1.5vw, 1.15rem)', 
+                color: textSecondary, lineHeight:1.7, fontWeight:400, 
+                maxWidth:600, transition:'color 0.4s' 
+              }}>
                 Start or join crystal-clear video calls instantly — no downloads, no friction. Built for{' '}
                 <span style={{ color: accentColor, fontWeight:600 }}>speed, security, and simplicity.</span>
               </p>
 
               {/* CTA Row */}
-              <div style={{ display:'flex', alignItems:'center', gap:12, marginTop:34, flexWrap:'wrap' }}>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:16, marginTop:40, flexWrap:'wrap', width:'100%' }}>
                 <NewMeetingDropdown dark={dark} isCreating={isCreating} onInstant={handleStartInstant} onScheduled={() => setShowSchedule(true)} btnBlack={btnBlack} btnBlackText={btnBlackText} />
                 <form onSubmit={handleJoin}>
                   <div style={{
@@ -1092,100 +1106,87 @@ const HomePage = () => {
               </div>
 
               {/* Stats */}
-              <div className="flex flex-wrap items-stretch mt-10 pt-6 border-t transition-all duration-400"
-                style={{ borderTopColor: statDiv }}>
+              <div className="flex flex-wrap items-center justify-center mt-12 pt-8 border-t transition-all duration-400 gap-y-6"
+                style={{ borderTopColor: statDiv, width:'100%' }}>
                 {[{val:'99.9%',lbl:'Uptime'},{val:'<80ms',lbl:'Avg Latency'},{val:'256-bit',lbl:'Encryption'},{val:'1–100',lbl:'Participants'}].map(({val,lbl},i) => (
-                  <div key={lbl} className={`flex flex-col pr-5 ${i === 0 ? 'pl-0' : 'pl-5'} ${i < 3 ? 'border-r' : 'border-none'} transition-all duration-400 mb-4 md:mb-0`}
+                  <div key={lbl} className={`flex flex-col px-8 ${i < 3 ? 'md:border-r' : 'border-none'} transition-all duration-400`}
                     style={{ borderRightColor: statDiv }}>
-                    <span style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontSize:'1.3rem', fontWeight:800, color: textPrimary, letterSpacing:'-0.02em', transition:'color 0.4s' }}>{val}</span>
-                    <span style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.55rem', color: textMuted, letterSpacing:'0.12em', textTransform:'uppercase', marginTop:2, transition:'color 0.4s' }}>{lbl}</span>
+                    <span style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontSize:'1.4rem', fontWeight:800, color: textPrimary, letterSpacing:'-0.03em', transition:'color 0.4s' }}>{val}</span>
+                    <span style={{ fontFamily:"'Space Mono', monospace", fontSize: '0.58rem', color: textMuted, letterSpacing:'0.14em', textTransform:'uppercase', marginTop:4, transition:'color 0.4s' }}>{lbl}</span>
                   </div>
                 ))}
               </div>
 
               {/* Pills */}
-              <div style={{ display:'flex', gap:8, marginTop:18, flexWrap:'wrap' }}>
+              <div style={{ display:'flex', gap:10, marginTop:24, flexWrap:'wrap', justifyContent:'center' }}>
                 {[{icon:Zap,text:'Instant HD'},{icon:Shield,text:'E2E Encrypted'},{icon:Globe,text:'Browser-based'}].map(({icon:Icon,text}) => (
-                  <div key={text} style={{ display:'flex', alignItems:'center', gap:6, background: dark?'rgba(255,255,255,0.05)':'rgba(255,255,255,0.55)', border:`1px solid ${dark?'rgba(255,200,100,0.12)':'rgba(180,130,70,0.22)'}`, borderRadius:100, padding:'5px 12px', fontSize:'0.71rem', color: textSecondary, fontWeight:500, backdropFilter:'blur(6px)', transition:'all 0.4s' }}>
-                    <Icon size={11} color={accentColor} />{text}
+                  <div key={text} style={{ display:'flex', alignItems:'center', gap:8, background: dark?'rgba(255,255,255,0.05)':'rgba(255,255,255,0.55)', border:`1px solid ${dark?'rgba(255,200,100,0.12)':'rgba(180,130,70,0.22)'}`, borderRadius:100, padding:'6px 16px', fontSize:'0.75rem', color: textSecondary, fontWeight:500, backdropFilter:'blur(8px)', transition:'all 0.4s' }}>
+                    <Icon size={12} color={accentColor} />{text}
                   </div>
                 ))}
               </div>
 
               {/* Scroll hint */}
-              <button onClick={scrollToPlans} style={{ display:'flex', alignItems:'center', gap:7, marginTop:28, background:'none', border:'none', cursor:'pointer', padding:0, color: textMuted, transition:'color 0.2s' }}
+              <button onClick={scrollToPlans} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8, marginTop:40, background:'none', border:'none', cursor:'pointer', padding:10, color: textMuted, transition:'color 0.2s' }}
                 onMouseEnter={e => e.currentTarget.style.color = accentColor}
                 onMouseLeave={e => e.currentTarget.style.color = textMuted}>
-                <span style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.62rem', letterSpacing:'0.1em' }}>VIEW SUBSCRIPTION PLANS</span>
-                <ChevronDown size={14} style={{ animation:'bounce 1.8s ease-in-out infinite' }} />
+                <span style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.65rem', letterSpacing:'0.15em' }}>VIEW SUBSCRIPTION PLANS</span>
+                <ChevronDown size={18} style={{ animation:'bounce 1.8s ease-in-out infinite' }} />
               </button>
             </motion.div>
+          </div>
 
-            {/* RIGHT — quick actions + recent meetings */}
-            <motion.div initial={{ opacity:0, x:26 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.7, delay:0.12, ease:[0.22,1,0.36,1] }}
-              className="flex flex-col gap-3 w-full max-w-[380px] md:h-full md:max-h-[calc(100vh-120px)] pt-4 md:pt-4">
-
-              {/* Quick actions */}
-              <div style={{ background: cardBg, border:`1px solid ${cardBorder}`, borderRadius:20, backdropFilter:'blur(20px)', padding:'20px 20px 16px', transition:'all 0.4s' }}>
-                <div style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.58rem', letterSpacing:'0.18em', textTransform:'uppercase', color: textMuted, marginBottom:14, transition:'color 0.4s' }}>// quick actions</div>
-                <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16 }}>
-                  <div style={{ width:38, height:38, borderRadius:11, background: btnBlack, color: btnBlackText, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:800, fontSize:'0.88rem', transition:'all 0.4s' }}>
+          {/* ── SECONDARY ACTIONS (Quick actions + recent meetings) ── */}
+          <div className="px-6 pb-20 max-w-[1300px] mx-auto w-full relative z-10">
+            <motion.div 
+              initial={{ opacity:0, y:20 }} 
+              whileInView={{ opacity:1, y:0 }} 
+              viewport={{ once:true }}
+              transition={{ duration:0.6, delay:0.2 }}
+              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            >
+              {/* Quick actions panel */}
+              <div style={{ background: cardBg, border:`1px solid ${cardBorder}`, borderRadius:24, backdropFilter:'blur(20px)', padding:'28px', transition:'all 0.4s' }}>
+                <div style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.58rem', letterSpacing:'0.18em', textTransform:'uppercase', color: textMuted, marginBottom:20 }}>// quick actions</div>
+                <div style={{ display:'flex', alignItems:'center', gap:14, marginBottom:24 }}>
+                  <div style={{ width:48, height:48, borderRadius:14, background: btnBlack, color: btnBlackText, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:800, fontSize:'1.1rem' }}>
                     {user?.name?.charAt(0).toUpperCase() || 'U'}
                   </div>
                   <div>
-                    <div style={{ fontSize:'0.68rem', color: textMuted, fontWeight:500, transition:'color 0.4s' }}>Welcome back</div>
-                    <div style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:700, fontSize:'0.95rem', color: textPrimary, transition:'color 0.4s' }}>{user?.name}</div>
+                    <div style={{ fontSize:'0.75rem', color: textMuted, fontWeight:500 }}>Welcome back,</div>
+                    <div style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:800, fontSize:'1.2rem', color: textPrimary, letterSpacing:'-0.02em' }}>{user?.name}</div>
                   </div>
                 </div>
 
-                {/* Instant Meeting — Zap icon */}
-                <button onClick={handleStartInstant} disabled={isCreating}
-                  style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px 15px', borderRadius:13, background: btnBlack, border:'none', cursor:'pointer', transition:'all 0.2s', color: btnBlackText, opacity: isCreating?0.55:1, marginBottom:8 }}
-                  onMouseEnter={e => { if (!isCreating) e.currentTarget.style.opacity='0.85'; }}
-                  onMouseLeave={e => { e.currentTarget.style.opacity='1'; }}>
-                  <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-                    <div style={{ width:26, height:26, borderRadius:7, background:'rgba(128,128,128,0.15)', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <button onClick={handleStartInstant} disabled={isCreating}
+                    style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px', borderRadius:16, background: btnBlack, border:'none', cursor:'pointer', transition:'all 0.2s', color: btnBlackText, opacity: isCreating?0.55:1 }}
+                    onMouseEnter={e => { if (!isCreating) e.currentTarget.style.transform='translateY(-2px)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:12 }}>
                       {isCreating
-                        ? <span style={{ width:11, height:11, border:`2px solid rgba(128,128,128,0.3)`, borderTopColor: btnBlackText, borderRadius:'50%', display:'inline-block', animation:'spin 0.7s linear infinite' }} />
-                        : <Zap size={13} color={btnBlackText} strokeWidth={2.5} />}
+                        ? <span style={{ width:14, height:14, border:`2px solid rgba(128,128,128,0.3)`, borderTopColor: btnBlackText, borderRadius:'50%', animation:'spin 0.7s linear infinite' }} />
+                        : <Zap size={16} color={btnBlackText} strokeWidth={2.5} />}
+                      <span style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:700, fontSize:'0.9rem' }}>Instant</span>
                     </div>
-                    <span style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:700, fontSize:'0.85rem' }}>{isCreating ? 'Starting…' : 'Instant Meeting'}</span>
-                  </div>
-                  <ArrowUpRight size={13} style={{ opacity:0.45 }} />
-                </button>
+                    <ArrowUpRight size={14} style={{ opacity:0.5 }} />
+                  </button>
 
-                {/* Schedule — CalendarClock icon */}
-                <button onClick={() => setShowSchedule(true)}
-                  style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'12px 15px', borderRadius:13, background: dark?'rgba(255,255,255,0.05)':'rgba(255,255,255,0.55)', border:`1.5px solid ${inputBorder}`, cursor:'pointer', transition:'all 0.2s', color: textPrimary }}
-                  onMouseEnter={e => { e.currentTarget.style.background=dark?'rgba(255,200,100,0.08)':'rgba(180,130,70,0.1)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background=dark?'rgba(255,255,255,0.05)':'rgba(255,255,255,0.55)'; }}>
-                  <div style={{ display:'flex', alignItems:'center', gap:9 }}>
-                    <div style={{ width:26, height:26, borderRadius:7, background: dark?'rgba(255,200,100,0.1)':'rgba(180,130,70,0.1)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                      <CalendarClock size={13} color={accentColor} strokeWidth={2} />
+                  <button onClick={() => setShowSchedule(true)}
+                    style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px', borderRadius:16, background: dark?'rgba(255,255,255,0.05)':'rgba(255,255,255,0.55)', border:`1.5px solid ${inputBorder}`, cursor:'pointer', transition:'all 0.2s', color: textPrimary }}
+                    onMouseEnter={e => { e.currentTarget.style.background=dark?'rgba(255,200,100,0.08)':'rgba(180,130,70,0.1)'; e.currentTarget.style.transform='translateY(-2px)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background=dark?'rgba(255,255,255,0.05)':'rgba(255,255,255,0.55)'; e.currentTarget.style.transform='translateY(0)'; }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+                      <CalendarClock size={16} color={accentColor} strokeWidth={2} />
+                      <span style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:700, fontSize:'0.9rem' }}>Schedule</span>
                     </div>
-                    <span style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:700, fontSize:'0.85rem' }}>Schedule Meeting</span>
-                  </div>
-                  <ArrowUpRight size={13} style={{ opacity:0.35 }} />
-                </button>
-
-                {/* Join input */}
-                <div style={{ display:'flex', alignItems:'center', gap:10, marginTop:8, padding:'10px 13px', borderRadius:13, background: dark?'rgba(255,255,255,0.05)':'rgba(255,255,255,0.55)', border:`1.5px solid ${inputBorder}`, transition:'all 0.4s' }}>
-                  <Hash size={12} color={dark?'rgba(255,200,100,0.25)':'rgba(100,60,10,0.3)'} />
-                  <input type="text" placeholder="Paste meeting code…" value={meetingIdInput} onChange={e => setMeetingIdInput(e.target.value)} onKeyDown={e => e.key==='Enter' && handleJoin()}
-                    style={{ flex:1, background:'none', border:'none', outline:'none', fontFamily:"'Space Mono', monospace", fontSize:'0.76rem', color: textPrimary, letterSpacing:'0.05em' }} />
-                  <AnimatePresence>
-                    {meetingIdInput.trim() && (
-                      <motion.button initial={{ opacity:0, scale:0.7 }} animate={{ opacity:1, scale:1 }} exit={{ opacity:0, scale:0.7 }} onClick={handleJoin} disabled={isJoining}
-                        style={{ padding:'5px 13px', borderRadius:9, background: btnBlack, color: btnBlackText, border:'none', cursor:'pointer', fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:700, fontSize:'0.72rem', whiteSpace:'nowrap' }}>
-                        {isJoining ? '…' : 'Join'}
-                      </motion.button>
-                    )}
-                  </AnimatePresence>
+                    <ArrowUpRight size={14} style={{ opacity:0.35 }} />
+                  </button>
                 </div>
               </div>
 
-              {/* Recent Meetings */}
-              <div style={{ background: cardBg, border:`1px solid ${cardBorder}`, borderRadius:20, backdropFilter:'blur(20px)', padding:'16px 16px 12px', flex:1, overflow:'hidden', display:'flex', flexDirection:'column', transition:'all 0.4s' }}>
+              {/* Past meetings panel */}
+              <div style={{ background: cardBg, border:`1px solid ${cardBorder}`, borderRadius:24, backdropFilter:'blur(20px)', padding:'24px', display:'flex', flexDirection:'column' }}>
                 <div style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.58rem', letterSpacing:'0.18em', textTransform:'uppercase', color: textMuted, marginBottom:10 }}>// past meetings</div>
                 <div style={{ flex:1, overflow:'hidden', display:'flex', flexDirection:'column', gap:5 }}>
                   {dashboardData?.recentMeetings?.length > 0 ? (

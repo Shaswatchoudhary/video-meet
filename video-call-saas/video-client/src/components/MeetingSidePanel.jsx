@@ -119,51 +119,103 @@ const ParticipantRow = ({ p, call, isCurrentUserHost }) => {
             <AnimatePresence>
               {menuOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: -6, scale: 0.94 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -6, scale: 0.94 }}
-                  transition={{ duration: 0.11 }}
+                  initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                  transition={{ duration: 0.15, ease: [0.23, 1, 0.32, 1] }}
                   style={{
-                    position: 'absolute', right: 0, top: 'calc(100% + 4px)',
-                    background: '#3c4043',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    borderRadius: 12, padding: 6, minWidth: 170,
-                    boxShadow: '0 10px 32px rgba(0,0,0,0.55)', zIndex: 300,
+                    position: 'absolute', right: 0, top: 'calc(100% + 8px)',
+                    background: 'rgba(28, 22, 18, 0.96)',
+                    backdropFilter: 'blur(16px)',
+                    border: '1px solid rgba(212, 144, 26, 0.25)',
+                    borderRadius: 14, padding: 6, minWidth: 190,
+                    boxShadow: '0 12px 40px rgba(0,0,0,0.65)', zIndex: 300,
                   }}
                 >
                   {[
                     {
+                      icon: <ShieldCheck size={14} color="#D4901A" />,
+                      label: p.isPinned ? 'Unpin participant' : 'Pin for me',
+                      color: '#F0E8D8',
+                      hoverBg: 'rgba(212, 144, 26, 0.12)',
+                      action: () => { 
+                        if (p.isPinned) call?.unpin?.(p.userId);
+                        else call?.pin?.(p.userId);
+                        setMenuOpen(false); 
+                      },
+                    },
+                    {
+                      icon: <Users size={14} color="#D4901A" />,
+                      label: 'Pin for everyone',
+                      color: '#F0E8D8',
+                      hoverBg: 'rgba(212, 144, 26, 0.12)',
+                      action: () => { 
+                        call?.sendCustomEvent?.({ type: 'global-pin', custom: { userId: p.userId } });
+                        setMenuOpen(false); 
+                      },
+                    },
+                    {
                       icon: <MicOff size={14} color="#9aa0a6" />,
-                      label: 'Mute participant',
+                      label: 'Mute audio',
                       color: '#e8eaed',
                       hoverBg: 'rgba(255,255,255,0.08)',
                       action: () => { call?.muteUser?.(p.userId, 'audio'); setMenuOpen(false); },
                     },
                     {
+                      icon: <VideoOff size={14} color="#9aa0a6" />,
+                      label: 'Mute video',
+                      color: '#e8eaed',
+                      hoverBg: 'rgba(255,255,255,0.08)',
+                      action: () => { call?.muteUser?.(p.userId, 'video'); setMenuOpen(false); },
+                    },
+                    {
+                      icon: <Search size={14} color="#9aa0a6" />,
+                      label: 'Allow screen share',
+                      color: '#e8eaed',
+                      hoverBg: 'rgba(255,255,255,0.08)',
+                      action: () => { /* Permissions toggling if supported */ setMenuOpen(false); },
+                    },
+                    {
                       icon: <UserMinus size={14} color="#ea4335" />,
                       label: 'Remove from call',
                       color: '#ea4335',
-                      hoverBg: 'rgba(234,67,53,0.08)',
+                      hoverBg: 'rgba(234,67,53,0.15)',
                       action: async () => {
                         try { await call?.removeMembers?.([p.userId]); }
                         catch { call?.blockUser?.(p.userId); }
                         setMenuOpen(false);
                       },
                     },
+                    {
+                      icon: <X size={14} color="#ea4335" />,
+                      label: 'Block from meeting',
+                      color: '#ea4335',
+                      hoverBg: 'rgba(234,67,53,0.15)',
+                      action: () => { call?.blockUser?.(p.userId); setMenuOpen(false); },
+                    },
                   ].map(item => (
                     <button key={item.label}
                       onClick={item.action}
                       style={{
                         width: '100%', display: 'flex', alignItems: 'center', gap: 10,
-                        padding: '9px 12px', borderRadius: 8,
+                        padding: '10px 12px', borderRadius: 10,
                         background: 'transparent', border: 'none', cursor: 'pointer',
-                        color: item.color, fontSize: '0.84rem', textAlign: 'left',
-                        transition: 'background 0.12s',
+                        color: item.color, fontSize: '0.85rem', fontWeight: 500,
+                        textAlign: 'left', transition: 'all 0.2s',
                       }}
-                      onMouseEnter={e => e.currentTarget.style.background = item.hoverBg}
-                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.background = item.hoverBg;
+                        e.currentTarget.style.paddingLeft = '14px';
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.background = 'transparent';
+                        e.currentTarget.style.paddingLeft = '12px';
+                      }}
                     >
-                      {item.icon}{item.label}
+                      <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 24 }}>
+                        {item.icon}
+                      </span>
+                      {item.label}
                     </button>
                   ))}
                 </motion.div>

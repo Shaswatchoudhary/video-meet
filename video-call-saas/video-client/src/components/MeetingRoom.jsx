@@ -9,6 +9,7 @@ import {
   StreamTheme,
   useCallStateHooks,
   useCall,
+  ParticipantView,
 } from '@stream-io/video-react-sdk';
 import '@stream-io/video-react-sdk/dist/css/styles.css';
 import { useAppContext } from '../context/useAppContext';
@@ -126,6 +127,137 @@ const ControlButton = ({
           OFF
         </div>
       )}
+    </div>
+  );
+};
+
+/* ── Custom Participant Menu (for Video Frames) ── */
+const ParticipantMenu = ({ participant, call, isHost }) => {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleClick = (e) => { 
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    window.addEventListener('mousedown', handleClick);
+    return () => window.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  // Hide for self
+  if (participant.isLocalParticipant) return null;
+  // If not host, hide moderation menu
+  if (!isHost) return null;
+
+  return (
+    <div ref={containerRef} style={{ position: 'absolute', top: 12, right: 12, zIndex: 100 }}>
+      <button
+        onClick={(e) => { 
+          e.stopPropagation(); 
+          setOpen(!open); 
+        }}
+        style={{
+          width: 32, height: 32, borderRadius: '50%',
+          background: 'rgba(15, 10, 4, 0.6)', border: '1.5px solid rgba(212, 144, 26, 0.4)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: '#F5E6C8', cursor: 'pointer', backdropFilter: 'blur(8px)',
+          transition: 'all 0.2s',
+        }}
+        onMouseEnter={e => e.currentTarget.style.background = 'rgba(212, 144, 26, 0.4)'}
+        onMouseLeave={e => e.currentTarget.style.background = 'rgba(15, 10, 4, 0.6)'}
+      >
+        <MoreVertical size={16} />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: -10 }}
+            style={{
+              position: 'absolute', right: 0, top: 'calc(100% + 8px)',
+              background: 'rgba(28, 22, 18, 0.98)', backdropFilter: 'blur(16px)',
+              border: '1px solid rgba(212, 144, 26, 0.3)', borderRadius: 14,
+              padding: 6, minWidth: 180, boxShadow: '0 12px 40px rgba(0,0,0,0.8)',
+            }}
+          >
+            {[
+              { 
+                label: participant.isPinned ? 'Unpin' : 'Pin for me', 
+                icon: <ShieldCheck size={14} color="#D4901A" />, 
+                color: '#F0E8D8', 
+                action: () => { if (participant.isPinned) call?.unpin?.(participant.userId); else call?.pin?.(participant.userId); setOpen(false); } 
+              },
+              { 
+                label: 'Pin for everyone', 
+                icon: <Users size={14} color="#D4901A" />, 
+                color: '#F0E8D8', 
+                action: () => { call?.sendCustomEvent?.({ type: 'global-pin', custom: { userId: participant.userId } }); setOpen(false); } 
+              },
+              { 
+                label: 'Mute audio', 
+                icon: <MicOff size={14} color="#9aa0a6" />, 
+                color: '#e8eaed', 
+                action: () => { call?.muteUser?.(participant.userId, 'audio'); setOpen(false); } 
+              },
+              { 
+                label: 'Mute video', 
+                icon: <VideoOff size={14} color="#9aa0a6" />, 
+                color: '#e8eaed', 
+                action: () => { call?.muteUser?.(participant.userId, 'video'); setOpen(false); } 
+              },
+              { 
+                label: 'Kick participant', 
+                icon: <UserMinus size={14} color="#ea4335" />, 
+                color: '#ea4335', 
+                action: () => { call?.removeMembers?.([participant.userId]); setOpen(false); } 
+              },
+              { 
+                label: 'Block user', 
+                icon: <X size={14} color="#ea4335" />, 
+                color: '#ea4335', 
+                action: () => { call?.blockUser?.(participant.userId); setOpen(false); } 
+              },
+            ].map(item => (
+              <button
+                key={item.label}
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  item.action(); 
+                }}
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center', gap: 10,
+                  padding: '10px 12px', borderRadius: 10, background: 'transparent',
+                  border: 'none', cursor: 'pointer', color: item.color,
+                  fontSize: '0.85rem', fontWeight: 500, transition: 'all 0.2s',
+                  textAlign: 'left'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(212, 144, 26, 0.12)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+              >
+                <span style={{ width: 20, display: 'flex', justifyContent: 'center' }}>{item.icon}</span>
+                {item.label}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+/* ── Custom Participant View (wraps Stream view) ── */
+const CustomParticipantView = (props) => {
+  const call = useCall();
+  const isHost = call?.state?.createdBy?.id === call?.state?.localParticipant?.userId;
+
+  return (
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <ParticipantView {...props} />
+      <ParticipantMenu participant={props.participant} call={call} isHost={isHost} />
     </div>
   );
 };
@@ -636,7 +768,10 @@ const MeetingLayout = ({ meetingId, isSidePanelOpen, navigate, togglePanel, acti
         overflow: 'hidden',
       }}>
         <div className={`flex-1 transition-all duration-300 ${isSidePanelOpen ? 'md:mr-[360px]' : 'mr-0'}`}>
-          {layout === 'grid' ? <PaginatedGridLayout /> : <SpeakerLayout />}
+          {layout === 'grid' 
+            ? <PaginatedGridLayout ParticipantViewUI={CustomParticipantView} /> 
+            : <SpeakerLayout ParticipantViewUI={CustomParticipantView} />
+          }
         </div>
 
         <MeetingSidePanel
@@ -819,6 +954,14 @@ const MeetingRoom = () => {
         });
 
         const call = client.call('default', meetingId);
+
+        // Global pin listener
+        call.on('custom', (event) => {
+          if (event.type === 'global-pin') {
+            const { userId } = event.custom;
+            call.pin(userId);
+          }
+        });
 
         await call.join({ create: true });
 

@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="assets/banner.png" alt="VideoMeet Banner" width="800">
-</p>
+
 
 # 🎥 VideoMeet SaaS
 

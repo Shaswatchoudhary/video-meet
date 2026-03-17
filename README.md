@@ -1,109 +1,111 @@
+<p align="center">
+  <img src="assets/banner.png" alt="VideoMeet Banner" width="800">
+</p>
+
 # 🎥 VideoMeet SaaS
 
-A premium, high-performance Video Calling SaaS platform built for speed, security, and simplicity. Built with **React**, **Node.js**, **MongoDB**, and powered by **GetStream.io** for industry-leading video quality.
+<p align="center">
+  <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React"></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"></a>
+  <a href="https://www.mongodb.com/"><img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB"></a>
+  <a href="https://getstream.io/video/"><img src="https://img.shields.io/badge/Stream_SDK-005FFF?style=for-the-badge&logo=stream&logoColor=white" alt="Stream"></a>
+</p>
+
+VideoMeet is a premium, high-performance Video Calling SaaS platform engineered for low latency, ultimate security, and a stunning user experience. Built with a modern tech stack and powered by **GetStream.io**, it offers industrial-grade video quality and reliability.
 
 ---
 
-## 🚀 Key Features
+## ✨ Key Features
 
-### **✨ Seamless Video Experience**
--   **HD Video & Audio**: Crystal-clear communication powered by Stream SDK.
--   **Instant & Scheduled Meetings**: Start a meeting now or plan ahead with shareable invite links.
--   **Interactive Tools**: Screen sharing, hand-raise, and real-time reactions (👍 ❤️ 😂 😮 👏 🎉).
--   **Dynamic Layouts**: Speaker view and Paginated Grid layouts for better focus.
+### **🚀 Seamless Video Experience**
+-   **Ultra-HD Video & Audio**: Crystal-clear communication optimized for low bandwidth.
+-   **Instant & Scheduled Meetings**: Start a meeting in one click or plan ahead with persistent invite links.
+-   **Interactive Collaboration**: Real-time screen sharing, hand-raise functionality, and expressive emoji reactions.
+-   **Intelligent Layouts**: Toggle between Speaker Focus and Paginated Grid layouts seamlessly.
 
-### **🛡️ Security & Authentication**
--   **E2E Encrypted**: Private and secure p2p communication.
--   **JWT Protected**: Industry-standard token-based authentication.
--   **Secure Storage**: Encrypted user credentials and MongoDB Atlas persistence.
+### **🛡️ Enterprise-Grade Security**
+-   **End-to-End Encryption**: Secure, private p2p communication paths for every call.
+-   **JWT-Based Auth**: Robust token-based authentication system.
+-   **Bcrypt Hashing**: Encrypted user credentials stored securely in MongoDB Atlas.
 
-### **💳 Subscription & Payments (Monetization)**
--   **Tiered Plans**: Enforced participant limits and meeting durations.
+### **💳 Monetization & Subscriptions**
+-   **Tiered Access Control**: Dynamic participant limits and meeting durations based on user plans.
     -   **Free**: 5 Participants | 20 Min Limit
     -   **Aarambh**: 10 Participants | 60 Min Limit
     -   **Samraat**: 200 Participants | Unlimited Duration
--   **Cashfree Integration**: Seamless localized payment gateway integration with dynamic Sandbox/Production modes.
-
-### **🎨 Premium UI/UX**
--   **Modern Aesthetics**: HSL-tailored color palettes, glassmorphism, and smooth Framer Motion animations.
--   **Micro-interactions**: Pulsing mute indicators and responsive control bars.
--   **Dark/Light Mode**: Fully responsive theme switching.
+-   **Seamless Payments**: Integrated with **Cashfree SDK** for secure, localized global payments.
 
 ---
 
 ## 🛠️ Technology Stack
 
-### **Frontend**
--   **Framework**: [React.js](https://reactjs.org/) (Vite)
--   **Styling**: Vanilla CSS + [Lucide React](https://lucide.dev/)
--   **Animations**: [Framer Motion](https://www.framer.com/motion/)
--   **Video Engine**: [Stream Video React SDK](https://getstream.io/video/docs/react/)
--   **Routing**: React Router v7
-
-### **Backend**
--   **Runtime**: [Node.js](https://nodejs.org/) & [Express.js](https://expressjs.com/)
--   **Database**: [MongoDB Atlas](https://www.mongodb.com/atlas) (Mongoose ODM)
--   **Auth**: JSON Web Tokens (JWT) & BcryptJS
--   **Payments**: [Cashfree SDK](https://www.cashfree.com/)
--   **Monitoring**: Site24x7 APM Insight
+| Component | Technology |
+| :--- | :--- |
+| **Frontend** | [React.js](https://reactjs.org/) (Vite), [Framer Motion](https://www.framer.com/motion/) |
+| **Styling** | Vanilla CSS, [Lucide Icons](https://lucide.dev/) |
+| **Video Engine** | [Stream Video SDK](https://getstream.io/video/docs/react/) |
+| **Backend** | [Node.js](https://nodejs.org/), [Express.js](https://expressjs.com/) |
+| **Database** | [MongoDB Atlas](https://www.mongodb.com/atlas) (Mongoose ODM) |
+| **Auth** | JSON Web Tokens (JWT) |
+| **Payments** | [Cashfree SDK](https://www.cashfree.com/) |
+| **Monitoring** | Site24x7 APM Insight |
 
 ---
 
-## ⚙️ Installation & Setup
+## ⚙️ Quick Start
 
 ### **1. Prerequisites**
--   Node.js (v18+)
--   Docker (Optional, for containerized run)
--   Stream.io API Keys
--   Cashfree API Keys
+-   **Node.js** (v18+)
+-   **Stream.io** API Credentials
+-   **Cashfree** API Credentials
+-   **MongoDB Atlas** URI
 
-### **2. Environment Configuration**
+### **2. Environment Setup**
 
-#### **Backend (`video-call-saas/backend/.env`)**
+#### **Backend (`backend/.env`)**
 ```env
 PORT=8000
-MONGO_URI=mongodb+srv://your_atlas_uri
-JWT_SECRET=your_secret_key
+MONGO_URI=your_mongodb_atlas_uri
+JWT_SECRET=your_jwt_secret
 STREAM_API_KEY=your_stream_key
 STREAM_SECRET=your_stream_secret
-CASHFREE_APP_ID=your_id
-CASHFREE_SECRET_KEY=your_secret
+CASHFREE_APP_ID=your_cashfree_id
+CASHFREE_SECRET_KEY=your_cashfree_secret
 CASHFREE_ENV=SANDBOX // or PRODUCTION
-FRONTEND_URL=https://your-frontend.vercel.app
-BACKEND_URL=https://your-backend.onrender.com
 ```
 
-#### **Frontend (`video-call-saas/video-client/.env`)**
+#### **Frontend (`video-client/.env`)**
 ```env
-VITE_API_BASE_URL=https://your-backend.onrender.com/api
+VITE_API_BASE_URL=http://localhost:8000/api
 ```
 
 ### **3. Running Locally**
 
-**Backend:**
 ```bash
-cd video-call-saas/backend
-npm install
-npm run dev
-```
+# Terminal 1: Backend
+cd backend && npm install && npm run dev
 
-**Frontend:**
-```bash
-cd video-call-saas/video-client
-npm install
-npm run dev
+# Terminal 2: Frontend
+cd video-call-saas/video-client && npm install && npm run dev
 ```
 
 ---
 
-## 🚢 Deployment
+## 🏗️ Architecture Overview
 
--   **Backend**: Best hosted on **Render** (Root Directory: `video-call-saas/backend`).
--   **Frontend**: Best hosted on **Vercel** (Root Directory: `video-call-saas/video-client`).
--   **Database**: Managed **MongoDB Atlas** shared cluster.
+The system follows a modern decoupled architecture:
+-   **Client Side**: High-performance React SPA with global state management via Context API.
+-   **Server Side**: Distributed Express.js API acting as a secure gateway for Auth, Payments, and Stream Session orchestration.
+-   **Real-time Layer**: Stream's edge network for global low-latency video distribution.
 
 ---
 
 ## 🛡️ License
 
-This project is licensed under the **ISC License**.
+Distributed under the **MIT License**. See `LICENSE` for more information.
+
+---
+
+<p align="center">
+  Built with ❤️ by the VideoMeet Team
+</p>

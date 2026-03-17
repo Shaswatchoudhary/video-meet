@@ -34,55 +34,17 @@ const HoneycombBg = ({ dark }) => {
     }
   }
   return (
-    <svg style={{ position: 'fixed', left: 0, top: 0, width: 480, height: '100vh', pointerEvents: 'none', zIndex: 0 }}
-      className="hidden md:block"
-      viewBox="0 0 480 900" preserveAspectRatio="xMinYMid slice">
+    <svg
+      style={{ position: 'absolute', left: 0, top: 0, width: 520, height: '100%', pointerEvents: 'none', zIndex: 0 }}
+      viewBox="0 0 520 900" preserveAspectRatio="xMinYMid slice"
+    >
       {hexes}
     </svg>
   );
 };
 
 /* ════════════════════════════════════════════
-   ANIMATED BORDER BADGE
-════════════════════════════════════════════ */
-const AnimatedBorderBadge = ({ dark }) => (
-  <div style={{ position: 'relative', display: 'inline-flex', marginBottom: 28 }}>
-    <style>{`
-      @keyframes sweep {
-        0%   { background-position: -200% center; }
-        100% { background-position:  200% center; }
-      }
-      .abw { padding:1.5px; border-radius:100px; display:inline-flex;
-        background: linear-gradient(90deg, transparent 0%, transparent 25%,
-          #B8741A 45%, #E8A030 50%, #B8741A 55%, transparent 75%, transparent 100%);
-        background-size:250% 100%; animation: sweep 2s linear infinite; }
-      .abw-d { background: linear-gradient(90deg, transparent 0%, transparent 25%,
-          #C8901A 45%, #FFB830 50%, #C8901A 55%, transparent 75%, transparent 100%);
-        background-size:250% 100%; animation: sweep 2s linear infinite; }
-    `}</style>
-    <div className={`abw ${dark ? 'abw-d' : ''}`}>
-      <div style={{
-        borderRadius: 100, padding: '7px 18px',
-        display: 'inline-flex', alignItems: 'center', gap: 8,
-        background: dark ? 'rgba(18,13,8,0.95)' : 'rgba(255,255,255,0.78)',
-        backdropFilter: 'blur(10px)',
-        fontFamily: "'Plus Jakarta Sans', sans-serif",
-        fontSize: '0.8rem', fontWeight: 500,
-        color: dark ? '#b8a080' : '#6B4E1A', whiteSpace: 'nowrap',
-      }}>
-        <div style={{
-          width: 6, height: 6, borderRadius: '50%',
-          background: '#E8501A', boxShadow: '0 0 5px #E8501A', flexShrink: 0,
-          animation: 'recDot 1.2s linear infinite',
-        }} />
-        Trusted for HD video calls worldwide
-      </div>
-    </div>
-  </div>
-);
-
-/* ════════════════════════════════════════════
-   NEW MEETING DROPDOWN  — Lucide icons only
+   NEW MEETING DROPDOWN
 ════════════════════════════════════════════ */
 const NewMeetingDropdown = ({ dark, isCreating, onInstant, onScheduled, btnBlack, btnBlackText }) => {
   const [open, setOpen] = useState(false);
@@ -112,29 +74,29 @@ const NewMeetingDropdown = ({ dark, isCreating, onInstant, onScheduled, btnBlack
         onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
       >
         {isCreating
-          ? <span style={{ width:14, height:14, border:`2px solid rgba(128,128,128,0.3)`, borderTopColor: btnBlackText, borderRadius:'50%', display:'inline-block', animation:'spin 0.7s linear infinite' }} />
+          ? <span style={{ width: 14, height: 14, border: `2px solid rgba(128,128,128,0.3)`, borderTopColor: btnBlackText, borderRadius: '50%', display: 'inline-block', animation: 'spin 0.7s linear infinite' }} />
           : <Plus size={16} strokeWidth={2.5} />}
         {isCreating ? 'Starting…' : 'New Meeting'}
-        <span style={{ fontSize:'0.65rem', opacity:0.55, transform: open?'rotate(180deg)':'rotate(0deg)', transition:'transform 0.2s', display:'inline-block' }}>▼</span>
+        <span style={{ fontSize: '0.65rem', opacity: 0.55, transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s', display: 'inline-block' }}>▼</span>
       </button>
 
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity:0, y:-6, scale:0.97 }}
-            animate={{ opacity:1, y:0, scale:1 }}
-            exit={{ opacity:0, y:-6, scale:0.97 }}
-            transition={{ duration:0.16, ease:[0.22,1,0.36,1] }}
+            initial={{ opacity: 0, y: -6, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.97 }}
+            transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
             style={{
-              position:'absolute', top:'calc(100% + 10px)', left:0, zIndex:200, minWidth:268,
+              position: 'absolute', top: 'calc(100% + 10px)', left: 0, zIndex: 200, minWidth: 268,
               background: dark ? 'rgba(18,13,8,0.97)' : 'rgba(253,249,241,0.97)',
-              border:`1px solid ${dark ? 'rgba(255,200,100,0.14)' : 'rgba(180,130,70,0.25)'}`,
-              borderRadius:18, backdropFilter:'blur(24px)',
+              border: `1px solid ${dark ? 'rgba(255,200,100,0.14)' : 'rgba(180,130,70,0.25)'}`,
+              borderRadius: 18, backdropFilter: 'blur(24px)',
               boxShadow: dark ? '0 20px 50px rgba(0,0,0,0.6)' : '0 20px 50px rgba(100,60,10,0.14)',
-              overflow:'hidden',
+              overflow: 'hidden',
             }}
           >
-            <div style={{ padding:6 }}>
+            <div style={{ padding: 6 }}>
               <DropItem
                 icon={<Zap size={17} color={dark ? '#D4901A' : '#B8741A'} strokeWidth={2.5} />}
                 iconBg={dark ? 'rgba(212,144,26,0.12)' : 'rgba(184,116,26,0.1)'}
@@ -151,10 +113,10 @@ const NewMeetingDropdown = ({ dark, isCreating, onInstant, onScheduled, btnBlack
               />
             </div>
             <div style={{
-              padding:'8px 16px 10px',
-              borderTop:`1px solid ${dark ? 'rgba(255,200,100,0.08)' : 'rgba(180,130,70,0.12)'}`,
-              fontFamily:"'Space Mono', monospace", fontSize:'0.56rem',
-              letterSpacing:'0.1em', color: dark ? '#3a2a18' : '#C0A060', textAlign:'center',
+              padding: '8px 16px 10px',
+              borderTop: `1px solid ${dark ? 'rgba(255,200,100,0.08)' : 'rgba(180,130,70,0.12)'}`,
+              fontFamily: "'Space Mono', monospace", fontSize: '0.56rem',
+              letterSpacing: '0.1em', color: dark ? '#3a2a18' : '#C0A060', textAlign: 'center',
             }}>
               ALL MEETINGS ARE END-TO-END ENCRYPTED
             </div>
@@ -173,20 +135,20 @@ const DropItem = ({ icon, iconBg, label, desc, accent, dark, action }) => {
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{
-        width:'100%', display:'flex', alignItems:'center', gap:13,
-        padding:'11px 12px', borderRadius:12,
+        width: '100%', display: 'flex', alignItems: 'center', gap: 13,
+        padding: '11px 12px', borderRadius: 12,
         background: hov ? (dark ? 'rgba(255,200,100,0.07)' : 'rgba(180,130,70,0.08)') : 'transparent',
-        border:'none', cursor:'pointer', transition:'background 0.15s', textAlign:'left',
+        border: 'none', cursor: 'pointer', transition: 'background 0.15s', textAlign: 'left',
       }}
     >
-      <div style={{ width:38, height:38, borderRadius:11, flexShrink:0, background: iconBg, display:'flex', alignItems:'center', justifyContent:'center' }}>
+      <div style={{ width: 38, height: 38, borderRadius: 11, flexShrink: 0, background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {icon}
       </div>
-      <div style={{ flex:1 }}>
-        <div style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontSize:'0.88rem', fontWeight:700, color: dark ? '#f0e8d8' : '#0F0A04' }}>{label}</div>
-        <div style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontSize:'0.7rem', color: dark ? '#6a5a40' : '#9a7a40', marginTop:1 }}>{desc}</div>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.88rem', fontWeight: 700, color: dark ? '#f0e8d8' : '#0F0A04' }}>{label}</div>
+        <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.7rem', color: dark ? '#6a5a40' : '#9a7a40', marginTop: 1 }}>{desc}</div>
       </div>
-      <ArrowUpRight size={14} color={accent} style={{ opacity: hov ? 1 : 0.3, transition:'opacity 0.15s', flexShrink:0 }} />
+      <ArrowUpRight size={14} color={accent} style={{ opacity: hov ? 1 : 0.3, transition: 'opacity 0.15s', flexShrink: 0 }} />
     </button>
   );
 };
@@ -196,47 +158,47 @@ const DropItem = ({ icon, iconBg, label, desc, accent, dark, action }) => {
 ════════════════════════════════════════════ */
 const ScheduleModal = ({ dark, onClose, onCreate, textPrimary, textMuted, cardBg, cardBorder, btnBlack, btnBlackText }) => {
   const [title, setTitle] = useState('');
-  const [date, setDate]   = useState('');
-  const [time, setTime]   = useState('');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
 
   const inputStyle = {
-    width:'100%', background: dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.7)',
-    border:`1.5px solid ${dark ? 'rgba(255,200,100,0.15)' : 'rgba(180,130,70,0.28)'}`,
-    borderRadius:10, padding:'10px 13px',
-    fontFamily:"'Plus Jakarta Sans', sans-serif", fontSize:'0.85rem',
-    color: textPrimary, outline:'none',
+    width: '100%', background: dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.7)',
+    border: `1.5px solid ${dark ? 'rgba(255,200,100,0.15)' : 'rgba(180,130,70,0.28)'}`,
+    borderRadius: 10, padding: '10px 13px',
+    fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.85rem',
+    color: textPrimary, outline: 'none',
   };
   const labelStyle = {
-    display:'block', fontFamily:"'Space Mono', monospace",
-    fontSize:'0.58rem', letterSpacing:'0.14em', textTransform:'uppercase',
-    color: textMuted, marginBottom:6,
+    display: 'block', fontFamily: "'Space Mono', monospace",
+    fontSize: '0.58rem', letterSpacing: '0.14em', textTransform: 'uppercase',
+    color: textMuted, marginBottom: 6,
   };
 
   return (
-    <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
-      style={{ position:'fixed', inset:0, zIndex:300, background:'rgba(0,0,0,0.45)', backdropFilter:'blur(6px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24 }}
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      style={{ position: 'fixed', inset: 0, zIndex: 300, background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
       onClick={onClose}
     >
-      <motion.div initial={{ scale:0.93, y:20 }} animate={{ scale:1, y:0 }} exit={{ scale:0.93, y:20 }}
-        transition={{ duration:0.22, ease:[0.22,1,0.36,1] }}
-        style={{ background: cardBg, border:`1px solid ${cardBorder}`, borderRadius:22, padding:'28px 28px 22px', width:'100%', maxWidth:400, backdropFilter:'blur(24px)', boxShadow: dark ? '0 30px 60px rgba(0,0,0,0.6)' : '0 30px 60px rgba(100,60,10,0.18)' }}
+      <motion.div initial={{ scale: 0.93, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.93, y: 20 }}
+        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+        style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: 22, padding: '28px 28px 22px', width: '100%', maxWidth: 400, backdropFilter: 'blur(24px)', boxShadow: dark ? '0 30px 60px rgba(0,0,0,0.6)' : '0 30px 60px rgba(100,60,10,0.18)' }}
         onClick={e => e.stopPropagation()}
       >
-        <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:6 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
           <CalendarClock size={20} color={dark ? '#D4901A' : '#B8741A'} />
-          <div style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontSize:'1.1rem', fontWeight:800, color: textPrimary }}>
+          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '1.1rem', fontWeight: 800, color: textPrimary }}>
             Schedule a Meeting
           </div>
         </div>
-        <div style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontSize:'0.78rem', color: textMuted, marginBottom:22 }}>
+        <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.78rem', color: textMuted, marginBottom: 22 }}>
           Fill in details and share the meeting link later.
         </div>
-        <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div>
             <label style={labelStyle}>Meeting Title</label>
             <input placeholder="e.g. Team Standup" value={title} onChange={e => setTitle(e.target.value)} style={inputStyle} />
           </div>
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             <div>
               <label style={labelStyle}>Date</label>
               <input type="date" value={date} onChange={e => setDate(e.target.value)} style={inputStyle} />
@@ -247,10 +209,10 @@ const ScheduleModal = ({ dark, onClose, onCreate, textPrimary, textMuted, cardBg
             </div>
           </div>
         </div>
-        <div style={{ display:'flex', gap:10, marginTop:22 }}>
-          <button onClick={onClose} style={{ flex:1, padding:'11px 0', borderRadius:12, background:'transparent', border:`1.5px solid ${dark ? 'rgba(255,200,100,0.18)' : 'rgba(180,130,70,0.3)'}`, color: textMuted, cursor:'pointer', fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:600, fontSize:'0.85rem' }}>Cancel</button>
-          <button onClick={() => { if (title||date) { onCreate({ title: title||'Scheduled Meeting', date, time }); onClose(); } }}
-            style={{ flex:2, padding:'11px 0', borderRadius:12, background: btnBlack, color: btnBlackText, border:'none', cursor:'pointer', fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:700, fontSize:'0.85rem' }}>
+        <div style={{ display: 'flex', gap: 10, marginTop: 22 }}>
+          <button onClick={onClose} style={{ flex: 1, padding: '11px 0', borderRadius: 12, background: 'transparent', border: `1.5px solid ${dark ? 'rgba(255,200,100,0.18)' : 'rgba(180,130,70,0.3)'}`, color: textMuted, cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: '0.85rem' }}>Cancel</button>
+          <button onClick={() => { if (title || date) { onCreate({ title: title || 'Scheduled Meeting', date, time }); onClose(); } }}
+            style={{ flex: 2, padding: '11px 0', borderRadius: 12, background: btnBlack, color: btnBlackText, border: 'none', cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: '0.85rem' }}>
             Create Meeting
           </button>
         </div>
@@ -265,7 +227,7 @@ const ScheduleModal = ({ dark, onClose, onCreate, textPrimary, textMuted, cardBg
 const LiveClock = () => {
   const [t, setT] = useState('');
   useEffect(() => {
-    const tick = () => setT(new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }));
+    const tick = () => setT(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
     tick(); const id = setInterval(tick, 1000); return () => clearInterval(id);
   }, []);
   return <span>{t}</span>;
@@ -280,23 +242,23 @@ const MtgRow = ({ mtg, idx, dark }) => {
     <div
       onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       style={{
-        display:'flex', alignItems:'center', gap:11, padding:'9px 12px', borderRadius:12, transition:'all 0.18s',
+        display: 'flex', alignItems: 'center', gap: 11, padding: '9px 12px', borderRadius: 12, transition: 'all 0.18s',
         background: hov ? (dark ? 'rgba(255,180,80,0.07)' : 'rgba(180,130,70,0.08)') : (dark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.5)'),
-        border:`1px solid ${hov ? (dark ? 'rgba(255,180,80,0.18)' : 'rgba(180,130,70,0.28)') : (dark ? 'rgba(255,255,255,0.06)' : 'rgba(200,168,130,0.22)')}`,
+        border: `1px solid ${hov ? (dark ? 'rgba(255,180,80,0.18)' : 'rgba(180,130,70,0.28)') : (dark ? 'rgba(255,255,255,0.06)' : 'rgba(200,168,130,0.22)')}`,
       }}
     >
-      <div style={{ width:32, height:32, borderRadius:9, flexShrink:0, background: dark ? 'rgba(255,180,80,0.09)' : 'rgba(180,130,70,0.11)', border:`1px solid ${dark ? 'rgba(255,180,80,0.16)' : 'rgba(180,130,70,0.18)'}`, display:'flex', alignItems:'center', justifyContent:'center' }}>
+      <div style={{ width: 32, height: 32, borderRadius: 9, flexShrink: 0, background: dark ? 'rgba(255,180,80,0.09)' : 'rgba(180,130,70,0.11)', border: `1px solid ${dark ? 'rgba(255,180,80,0.16)' : 'rgba(180,130,70,0.18)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Video size={13} color={dark ? '#C8902A' : '#A0722A'} />
       </div>
-      <div style={{ flex:1, minWidth:0 }}>
-        <div style={{ fontSize:'0.8rem', fontWeight:600, color: dark ? '#e8ddd0' : '#1a1008', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', fontFamily:"'Plus Jakarta Sans', sans-serif" }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: '0.8rem', fontWeight: 600, color: dark ? '#e8ddd0' : '#1a1008', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
           {mtg.title || 'Quick Meeting'}
         </div>
-        <div style={{ fontSize:'0.62rem', color: dark ? '#6a5a40' : '#A08060', marginTop:2, fontFamily:"'Space Mono', monospace" }}>
-          {new Date(mtg.createdAt||Date.now()).toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'})} · {new Date(mtg.createdAt||Date.now()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+        <div style={{ fontSize: '0.62rem', color: dark ? '#6a5a40' : '#A08060', marginTop: 2, fontFamily: "'Space Mono', monospace" }}>
+          {new Date(mtg.createdAt || Date.now()).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })} · {new Date(mtg.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
       </div>
-      <div style={{ padding:'3px 9px', borderRadius:100, flexShrink:0, background: dark ? 'rgba(255,255,255,0.05)' : 'rgba(180,130,70,0.08)', border:`1px solid ${dark ? 'rgba(255,255,255,0.08)' : 'rgba(180,130,70,0.18)'}`, fontFamily:"'Space Mono', monospace", fontSize:'0.55rem', letterSpacing:'0.08em', color: dark ? '#4a3820' : '#B09060' }}>
+      <div style={{ padding: '3px 9px', borderRadius: 100, flexShrink: 0, background: dark ? 'rgba(255,255,255,0.05)' : 'rgba(180,130,70,0.08)', border: `1px solid ${dark ? 'rgba(255,255,255,0.08)' : 'rgba(180,130,70,0.18)'}`, fontFamily: "'Space Mono', monospace", fontSize: '0.55rem', letterSpacing: '0.08em', color: dark ? '#4a3820' : '#B09060' }}>
         ENDED
       </div>
     </div>
@@ -315,17 +277,16 @@ const plans = [
     price: 100,
     perMonth: '8',
     badge: null,
-    badgeColor: null,
     Icon: Rocket,
     color: '#2a72B8',
     colorDark: '#5a9aD4',
     features: [
-      { icon: Users,     text: 'Up to 10 participants per call' },
-      { icon: Video,     text: 'HD video & crystal-clear audio' },
-      { icon: Shield,    text: 'Screen sharing & presentation mode' },
-      { icon: Clock,     text: '60-minute meeting limit' },
-      { icon: Zap,       text: 'Chat, reactions & raise hand' },
-      { icon: Lock,      text: 'End-to-end encrypted calls' },
+      { icon: Users, text: 'Up to 10 participants per call' },
+      { icon: Video, text: 'HD video & crystal-clear audio' },
+      { icon: Shield, text: 'Screen sharing & presentation mode' },
+      { icon: Clock, text: '60-minute meeting limit' },
+      { icon: Zap, text: 'Chat, reactions & raise hand' },
+      { icon: Lock, text: 'End-to-end encrypted calls' },
     ],
   },
   {
@@ -336,367 +297,25 @@ const plans = [
     price: 200,
     perMonth: '17',
     badge: 'SABSE BEST',
-    badgeColor: '#B8741A',
     Icon: Crown,
     color: '#B8741A',
     colorDark: '#D4901A',
     features: [
-      { icon: Users,     text: 'Up to 100 participants per call' },
-      { icon: Video,     text: 'HD+ video & studio-grade audio' },
-      { icon: Shield,    text: 'Screen share + cloud recording' },
-      { icon: Infinity,  text: 'Unlimited meeting duration' },
-      { icon: Zap,       text: 'Chat, reactions, raise hand & polls' },
-      { icon: Lock,      text: 'End-to-end encrypted + meeting lock' },
-      { icon: Headphones,text: 'Priority 24/7 support' },
-      { icon: Gem,       text: 'Custom branding & domain' },
+      { icon: Users, text: 'Up to 100 participants per call' },
+      { icon: Video, text: 'HD+ video & studio-grade audio' },
+      { icon: Shield, text: 'Screen share + cloud recording' },
+      { icon: Infinity, text: 'Unlimited meeting duration' },
+      { icon: Zap, text: 'Chat, reactions, raise hand & polls' },
+      { icon: Lock, text: 'End-to-end encrypted + meeting lock' },
+      { icon: Headphones, text: 'Priority 24/7 support' },
+      { icon: Gem, text: 'Custom branding & domain' },
     ],
   },
 ];
 
 /* ════════════════════════════════════════════
-   ACTIVE SUBSCRIPTION INFO PANEL
+   PLAN CARD
 ════════════════════════════════════════════ */
-const ActiveSubscriptionPanel = ({ subInfo, dark, textPrimary, textMuted, cardBg, cardBorder, accentColor }) => {
-  const isPro     = subInfo?.plan === 'samraat';
-  const planData  = plans.find(p => p.id === subInfo?.plan) || plans[0];
-  const accentClr = isPro ? (dark ? '#D4901A' : '#B8741A') : (dark ? '#5a9aD4' : '#2a72B8');
-  const accentLt  = isPro
-    ? (dark ? 'rgba(212,144,26,0.1)' : 'rgba(184,116,26,0.08)')
-    : (dark ? 'rgba(90,154,212,0.1)' : 'rgba(42,114,184,0.08)');
-  const accentBd  = isPro
-    ? (dark ? 'rgba(212,144,26,0.3)' : 'rgba(184,116,26,0.3)')
-    : (dark ? 'rgba(90,154,212,0.3)' : 'rgba(42,114,184,0.3)');
-
-  const daysLeft    = subInfo?.daysRemaining ?? 0;
-  const totalDays   = subInfo?.totalDays ?? 365;
-  const progress    = Math.min(100, Math.max(0, ((totalDays - daysLeft) / totalDays) * 100));
-  const progressClr = daysLeft > 30 ? '#22c55e' : daysLeft > 7 ? '#f59e0b' : '#ef4444';
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      style={{
-        background: cardBg,
-        border: `1.5px solid ${accentBd}`,
-        borderRadius: 24, backdropFilter: 'blur(20px)',
-        padding: '28px 28px 24px', position: 'relative', overflow: 'hidden',
-        boxShadow: dark ? `0 8px 32px rgba(0,0,0,0.3)` : `0 8px 32px rgba(100,60,10,0.1)`,
-      }}
-    >
-      {/* Glow blob */}
-      <div style={{
-        position: 'absolute', top: -50, right: -50, width: 180, height: 180,
-        borderRadius: '50%', background: accentLt, pointerEvents: 'none',
-      }} />
-
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 22 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{
-            width: 48, height: 48, borderRadius: 15, flexShrink: 0,
-            background: accentLt, border: `1.5px solid ${accentBd}`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <planData.Icon size={22} color={accentClr} strokeWidth={1.8} />
-          </div>
-          <div>
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.55rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: textMuted, marginBottom: 3 }}>
-              Your Subscription
-            </div>
-            <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '1.4rem', fontWeight: 800, color: accentClr, letterSpacing: '-0.02em', lineHeight: 1 }}>
-              {planData.hindiName}
-            </div>
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: textMuted, marginTop: 3 }}>
-              {planData.tagline}
-            </div>
-          </div>
-        </div>
-
-        {/* Active badge */}
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 5,
-          background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)',
-          borderRadius: 100, padding: '5px 12px',
-        }}>
-          <BadgeCheck size={12} color="#22c55e" />
-          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.55rem', letterSpacing: '0.1em', color: '#16a34a', fontWeight: 700 }}>
-            ACTIVE
-          </span>
-        </div>
-      </div>
-
-      {/* Stats row */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12, marginBottom: 22,
-      }}>
-        {[
-          {
-            icon: CalendarDays, label: 'Start Date',
-            value: subInfo?.startDate
-              ? new Date(subInfo.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-              : '—',
-          },
-          {
-            icon: CalendarDays, label: 'Expires On',
-            value: subInfo?.expiryDate
-              ? new Date(subInfo.expiryDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-              : '—',
-          },
-          {
-            icon: Clock, label: 'Days Left',
-            value: `${daysLeft} days`,
-            valueColor: progressClr,
-          },
-        ].map(({ icon: Icon, label, value, valueColor }) => (
-          <div key={label} style={{
-            background: dark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.6)',
-            border: `1px solid ${dark ? 'rgba(255,200,100,0.08)' : 'rgba(180,130,70,0.18)'}`,
-            borderRadius: 14, padding: '13px 14px',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 8 }}>
-              <Icon size={11} color={accentClr} strokeWidth={2} />
-              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.52rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: textMuted }}>{label}</span>
-            </div>
-            <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.88rem', fontWeight: 700, color: valueColor || textPrimary, letterSpacing: '-0.01em' }}>
-              {value}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Progress bar */}
-      <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 7 }}>
-          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.54rem', letterSpacing: '0.1em', color: textMuted, textTransform: 'uppercase' }}>Subscription Progress</span>
-          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.54rem', color: progressClr }}>{Math.round(progress)}% used</span>
-        </div>
-        <div style={{ height: 6, background: dark ? 'rgba(255,255,255,0.06)' : 'rgba(180,130,70,0.15)', borderRadius: 6, overflow: 'hidden' }}>
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            style={{ height: '100%', borderRadius: 6, background: progressClr }}
-          />
-        </div>
-      </div>
-
-      {/* Features grid */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 7, marginTop: 20,
-        paddingTop: 18,
-        borderTop: `1px solid ${dark ? 'rgba(255,200,100,0.08)' : 'rgba(180,130,70,0.15)'}`,
-      }}>
-        {planData.features.map((f, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-            <div style={{
-              width: 20, height: 20, borderRadius: 6, flexShrink: 0,
-              background: accentLt, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <f.icon size={10} color={accentClr} strokeWidth={2} />
-            </div>
-            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.74rem', color: dark ? '#9a8a70' : '#6a5030', lineHeight: 1.3 }}>{f.text}</span>
-          </div>
-        ))}
-      </div>
-    </motion.div>
-  );
-};
-
-/* ════════════════════════════════════════════
-   UPGRADE TO PRO PANEL
-════════════════════════════════════════════ */
-const UpgradePanel = ({ dark, textPrimary, textMuted, cardBg, cardBorder, onUpgrade, upgrading }) => {
-  const proPlan   = plans[1];
-  const accentClr = dark ? '#D4901A' : '#B8741A';
-  const accentLt  = dark ? 'rgba(212,144,26,0.1)' : 'rgba(184,116,26,0.08)';
-  const accentBd  = dark ? 'rgba(212,144,26,0.3)'  : 'rgba(184,116,26,0.3)';
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-      style={{
-        background: dark ? 'rgba(200,144,42,0.06)' : 'rgba(184,116,26,0.05)',
-        border: `2px solid ${accentBd}`,
-        borderRadius: 24, backdropFilter: 'blur(20px)',
-        padding: '28px 28px 24px', position: 'relative', overflow: 'hidden',
-        boxShadow: dark ? '0 8px 32px rgba(200,144,42,0.12)' : '0 8px 32px rgba(184,116,26,0.1)',
-        display: 'flex', flexDirection: 'column',
-      }}
-    >
-      {/* Glow */}
-      <div style={{ position: 'absolute', top: -40, right: -40, width: 160, height: 160, borderRadius: '50%', background: accentLt, pointerEvents: 'none' }} />
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-        <TrendingUp size={16} color={accentClr} strokeWidth={2} />
-        <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.55rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: accentClr, fontWeight: 700 }}>
-          Upgrade Plan
-        </span>
-      </div>
-
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 18 }}>
-        <div style={{ width: 48, height: 48, borderRadius: 15, flexShrink: 0, background: accentLt, border: `1.5px solid ${accentBd}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Crown size={22} color={accentClr} strokeWidth={1.8} />
-        </div>
-        <div>
-          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '1.5rem', fontWeight: 800, color: accentClr, letterSpacing: '-0.02em', lineHeight: 1 }}>
-            Samraat
-          </div>
-          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: textMuted, marginTop: 3 }}>
-            सम्राट · The Emperor
-          </div>
-        </div>
-      </div>
-
-      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.82rem', color: textMuted, marginBottom: 18, lineHeight: 1.6 }}>
-        Unlock the full power of VideoMeet. More participants, cloud recording, unlimited calls & premium support.
-      </div>
-
-      {/* Feature highlights */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 22, flex: 1 }}>
-        {proPlan.features.slice(0, 5).map((f, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Check size={12} color={accentClr} strokeWidth={2.5} style={{ flexShrink: 0 }} />
-            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.78rem', color: dark ? '#9a8a70' : '#6a5030' }}>{f.text}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Price + CTA */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
-        <div>
-          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '2rem', fontWeight: 900, color: textPrimary, letterSpacing: '-0.03em' }}>₹200</span>
-          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', color: textMuted, marginLeft: 5 }}>/year</span>
-        </div>
-        <div style={{ flex: 1 }} />
-      </div>
-
-      <button
-        onClick={onUpgrade}
-        disabled={upgrading}
-        style={{
-          width: '100%', padding: '14px 0', borderRadius: 14,
-          background: upgrading ? 'rgba(200,144,42,0.3)' : accentClr,
-          border: 'none', color: '#fff',
-          fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: '0.9rem',
-          cursor: upgrading ? 'not-allowed' : 'pointer', transition: 'all 0.2s',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-          boxShadow: upgrading ? 'none' : `0 6px 22px ${accentClr}55`,
-          letterSpacing: '-0.01em',
-        }}
-        onMouseEnter={e => { if (!upgrading) e.currentTarget.style.opacity = '0.88'; }}
-        onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
-      >
-        {upgrading
-          ? <><span style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block', animation: 'spin 0.7s linear infinite' }} />Upgrading…</>
-          : <><TrendingUp size={16} strokeWidth={2.5} />Upgrade to Samraat</>
-        }
-      </button>
-    </motion.div>
-  );
-};
-
-/* ════════════════════════════════════════════
-   SUBSCRIPTION SECTION  (state-aware)
-════════════════════════════════════════════ */
-const SubscriptionSection = ({ dark, textPrimary, textMuted, cardBg, cardBorder, accentColor, onSubscribe, subInfo, onSubInfoChange }) => {
-  const [upgrading, setUpgrading] = useState(false);
-  const { axiosInstance } = useAppContext();
-
-  // "none" — show both plan cards
-  if (!subInfo || subInfo.plan === 'none') {
-    return (
-      <div style={{ position: 'relative', zIndex: 1, padding: '60px 44px 64px', maxWidth: 1300, margin: '0 auto', width: '100%' }}>
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: 48 }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            background: dark ? 'rgba(255,200,100,0.07)' : 'rgba(184,116,26,0.08)',
-            border: `1px solid ${dark ? 'rgba(255,200,100,0.18)' : 'rgba(184,116,26,0.25)'}`,
-            borderRadius: 100, padding: '6px 18px', marginBottom: 20,
-          }}>
-            <Sparkles size={13} color={accentColor} />
-            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', letterSpacing: '0.15em', color: accentColor, fontWeight: 700 }}>
-              SUBSCRIPTION PLANS · सदस्यता योजनाएं
-            </span>
-          </div>
-          <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 'clamp(2rem, 3.5vw, 3rem)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.025em', color: textPrimary, marginBottom: 14 }}>
-            Choose Your <span style={{ color: accentColor }}>Raasta</span> to Success
-          </h2>
-          <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '1rem', color: textMuted, maxWidth: 520, margin: '0 auto', lineHeight: 1.7 }}>
-            Dono plans mein milegi world-class video quality.<br />Billed yearly — save big, stay connected.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[920px] mx-auto">
-          {plans.map(plan => (
-            <PlanCard key={plan.id} plan={plan} dark={dark} textPrimary={textPrimary} textMuted={textMuted} cardBg={cardBg} cardBorder={cardBorder} onSubscribe={onSubscribe} />
-          ))}
-        </div>
-
-        <div style={{ textAlign: 'center', marginTop: 36 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-            <Shield size={13} color={dark ? '#4a8a4a' : '#2a6a2a'} />
-            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', letterSpacing: '0.1em', color: textMuted }}>
-              14-din free trial · No credit card required · Cancel anytime
-            </span>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // "aarambh" or "samraat" — show active subscription
-  const handleUpgrade = () => {
-    onSubscribe(plans[1]); // plans[1] is Samraat
-  };
-
-  const isPro = subInfo.plan === 'samraat';
-
-  return (
-    <div style={{ position: 'relative', zIndex: 1, padding: '60px 44px 64px', maxWidth: 1300, margin: '0 auto', width: '100%' }}>
-      {/* Section header */}
-      <div style={{ textAlign: 'center', marginBottom: 40 }}>
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.25)',
-          borderRadius: 100, padding: '6px 18px', marginBottom: 16,
-        }}>
-          <BadgeCheck size={13} color="#22c55e" />
-          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', letterSpacing: '0.15em', color: '#16a34a', fontWeight: 700 }}>
-            ACTIVE SUBSCRIPTION · सदस्यता सक्रिय है
-          </span>
-        </div>
-        <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.025em', color: textPrimary, marginBottom: 10 }}>
-          {isPro ? 'Aap hain ' : 'Aapka '}<span style={{ color: accentColor }}>{isPro ? 'Samraat' : 'Aarambh'}</span> {isPro ? 'Plan Par' : 'Plan Chal Raha Hai'}
-        </h2>
-        <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.95rem', color: textMuted, maxWidth: 480, margin: '0 auto', lineHeight: 1.7 }}>
-          {isPro ? 'You have the best plan. Enjoy unlimited calls, recording & priority support.' : 'Your starter journey is on. Upgrade anytime to unlock the full Samraat experience.'}
-        </p>
-      </div>
-
-      {/* Content grid */}
-      <div className={`grid gap-6 mx-auto ${isPro ? 'max-w-[720px] grid-cols-1' : 'max-w-[960px] grid-cols-1 md:grid-cols-2'}`}>
-        <ActiveSubscriptionPanel
-          subInfo={subInfo} dark={dark}
-          textPrimary={textPrimary} textMuted={textMuted}
-          cardBg={cardBg} cardBorder={cardBorder} accentColor={accentColor}
-        />
-        {!isPro && (
-          <UpgradePanel
-            dark={dark} textPrimary={textPrimary} textMuted={textMuted}
-            cardBg={cardBg} cardBorder={cardBorder}
-            onUpgrade={handleUpgrade} upgrading={upgrading}
-          />
-        )}
-      </div>
-    </div>
-  );
-};
-
 const PlanCard = ({ plan, dark, textPrimary, textMuted, cardBg, cardBorder, onSubscribe }) => {
   const [hov, setHov] = useState(false);
   const isSamraat = plan.id === 'samraat';
@@ -728,7 +347,6 @@ const PlanCard = ({ plan, dark, textPrimary, textMuted, cardBg, cardBorder, onSu
         backdropFilter: 'blur(20px)',
       }}
     >
-      {/* Glow bg for samraat */}
       {isSamraat && (
         <div style={{
           position: 'absolute', top: -60, right: -60,
@@ -737,8 +355,6 @@ const PlanCard = ({ plan, dark, textPrimary, textMuted, cardBg, cardBorder, onSu
           pointerEvents: 'none',
         }} />
       )}
-
-      {/* Badge */}
       {plan.badge && (
         <div style={{
           position: 'absolute', top: 20, right: 20,
@@ -752,7 +368,6 @@ const PlanCard = ({ plan, dark, textPrimary, textMuted, cardBg, cardBorder, onSu
         </div>
       )}
 
-      {/* Icon + name */}
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, marginBottom: 20 }}>
         <div style={{
           width: 52, height: 52, borderRadius: 16, flexShrink: 0,
@@ -763,42 +378,25 @@ const PlanCard = ({ plan, dark, textPrimary, textMuted, cardBg, cardBorder, onSu
           <plan.Icon size={22} color={accentClr} strokeWidth={1.8} />
         </div>
         <div>
-          <div style={{
-            fontFamily: "'Plus Jakarta Sans', sans-serif",
-            fontSize: '1.5rem', fontWeight: 800,
-            color: accentClr, letterSpacing: '-0.02em', lineHeight: 1,
-          }}>
+          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '1.5rem', fontWeight: 800, color: accentClr, letterSpacing: '-0.02em', lineHeight: 1 }}>
             {plan.hindiName}
           </div>
-          <div style={{
-            fontFamily: "'Space Mono', monospace",
-            fontSize: '0.6rem', color: textMuted,
-            letterSpacing: '0.08em', marginTop: 4,
-          }}>
+          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.6rem', color: textMuted, letterSpacing: '0.08em', marginTop: 4 }}>
             {plan.tagline}
           </div>
         </div>
       </div>
 
-      {/* Subtitle */}
-      <div style={{
-        fontFamily: "'Plus Jakarta Sans', sans-serif",
-        fontSize: '0.82rem', color: textMuted, marginBottom: 22, lineHeight: 1.5,
-      }}>
+      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.82rem', color: textMuted, marginBottom: 22, lineHeight: 1.5 }}>
         {plan.subtitle}
       </div>
 
-      {/* Price */}
       <div style={{
         display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 6,
         paddingBottom: 20,
         borderBottom: `1px solid ${dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.15)'}`,
       }}>
-        <span style={{
-          fontFamily: "'Plus Jakarta Sans', sans-serif",
-          fontSize: '3rem', fontWeight: 900,
-          color: textPrimary, letterSpacing: '-0.04em', lineHeight: 1,
-        }}>₹{plan.price}</span>
+        <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '3rem', fontWeight: 900, color: textPrimary, letterSpacing: '-0.04em', lineHeight: 1 }}>₹{plan.price}</span>
         <div>
           <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.65rem', color: textMuted }}>/ year</div>
           <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.72rem', color: accentClr, fontWeight: 600 }}>
@@ -807,7 +405,6 @@ const PlanCard = ({ plan, dark, textPrimary, textMuted, cardBg, cardBorder, onSu
         </div>
       </div>
 
-      {/* Features */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 11, marginBottom: 26 }}>
         {plan.features.map((f, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -818,15 +415,11 @@ const PlanCard = ({ plan, dark, textPrimary, textMuted, cardBg, cardBorder, onSu
             }}>
               <f.icon size={12} color={accentClr} strokeWidth={2} />
             </div>
-            <span style={{
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontSize: '0.82rem', color: dark ? '#9a8a70' : '#6a5030', lineHeight: 1.4,
-            }}>{f.text}</span>
+            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.82rem', color: dark ? '#9a8a70' : '#6a5030', lineHeight: 1.4 }}>{f.text}</span>
           </div>
         ))}
       </div>
 
-      {/* CTA */}
       <button
         onClick={() => onSubscribe(plan)}
         style={{
@@ -852,33 +445,347 @@ const PlanCard = ({ plan, dark, textPrimary, textMuted, cardBg, cardBorder, onSu
 };
 
 /* ════════════════════════════════════════════
+   ACTIVE SUBSCRIPTION PANEL
+════════════════════════════════════════════ */
+const ActiveSubscriptionPanel = ({ subInfo, dark, textPrimary, textMuted, cardBg, cardBorder, accentColor }) => {
+  const isPro = subInfo?.plan === 'samraat';
+  const planData = plans.find(p => p.id === subInfo?.plan) || plans[0];
+  const accentClr = isPro ? (dark ? '#D4901A' : '#B8741A') : (dark ? '#5a9aD4' : '#2a72B8');
+  const accentLt = isPro
+    ? (dark ? 'rgba(212,144,26,0.1)' : 'rgba(184,116,26,0.08)')
+    : (dark ? 'rgba(90,154,212,0.1)' : 'rgba(42,114,184,0.08)');
+  const accentBd = isPro
+    ? (dark ? 'rgba(212,144,26,0.3)' : 'rgba(184,116,26,0.3)')
+    : (dark ? 'rgba(90,154,212,0.3)' : 'rgba(42,114,184,0.3)');
+
+  const daysLeft = subInfo?.daysRemaining ?? 0;
+  const totalDays = subInfo?.totalDays ?? 365;
+  const progress = Math.min(100, Math.max(0, ((totalDays - daysLeft) / totalDays) * 100));
+  const progressClr = daysLeft > 30 ? '#22c55e' : daysLeft > 7 ? '#f59e0b' : '#ef4444';
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      style={{
+        background: cardBg,
+        border: `1.5px solid ${accentBd}`,
+        borderRadius: 24, backdropFilter: 'blur(20px)',
+        padding: '28px 28px 24px', position: 'relative', overflow: 'hidden',
+        boxShadow: dark ? `0 8px 32px rgba(0,0,0,0.3)` : `0 8px 32px rgba(100,60,10,0.1)`,
+      }}
+    >
+      <div style={{ position: 'absolute', top: -50, right: -50, width: 180, height: 180, borderRadius: '50%', background: accentLt, pointerEvents: 'none' }} />
+
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 22 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{
+            width: 48, height: 48, borderRadius: 15, flexShrink: 0,
+            background: accentLt, border: `1.5px solid ${accentBd}`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <planData.Icon size={22} color={accentClr} strokeWidth={1.8} />
+          </div>
+          <div>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.55rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: textMuted, marginBottom: 3 }}>
+              Your Subscription
+            </div>
+            <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '1.4rem', fontWeight: 800, color: accentClr, letterSpacing: '-0.02em', lineHeight: 1 }}>
+              {planData.hindiName}
+            </div>
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: textMuted, marginTop: 3 }}>
+              {planData.tagline}
+            </div>
+          </div>
+        </div>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 5,
+          background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)',
+          borderRadius: 100, padding: '5px 12px',
+        }}>
+          <BadgeCheck size={12} color="#22c55e" />
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.55rem', letterSpacing: '0.1em', color: '#16a34a', fontWeight: 700 }}>ACTIVE</span>
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 22 }}>
+        {[
+          { icon: CalendarDays, label: 'Start Date', value: subInfo?.startDate ? new Date(subInfo.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—' },
+          { icon: CalendarDays, label: 'Expires On', value: subInfo?.expiryDate ? new Date(subInfo.expiryDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—' },
+          { icon: Clock, label: 'Days Left', value: `${daysLeft} days`, valueColor: progressClr },
+        ].map(({ icon: Icon, label, value, valueColor }) => (
+          <div key={label} style={{
+            background: dark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.6)',
+            border: `1px solid ${dark ? 'rgba(255,200,100,0.08)' : 'rgba(180,130,70,0.18)'}`,
+            borderRadius: 14, padding: '13px 14px',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 8 }}>
+              <Icon size={11} color={accentClr} strokeWidth={2} />
+              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.52rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: textMuted }}>{label}</span>
+            </div>
+            <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.88rem', fontWeight: 700, color: valueColor || textPrimary, letterSpacing: '-0.01em' }}>
+              {value}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 7 }}>
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.54rem', letterSpacing: '0.1em', color: textMuted, textTransform: 'uppercase' }}>Subscription Progress</span>
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.54rem', color: progressClr }}>{Math.round(progress)}% used</span>
+        </div>
+        <div style={{ height: 6, background: dark ? 'rgba(255,255,255,0.06)' : 'rgba(180,130,70,0.15)', borderRadius: 6, overflow: 'hidden' }}>
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            style={{ height: '100%', borderRadius: 6, background: progressClr }}
+          />
+        </div>
+      </div>
+
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 7, marginTop: 20,
+        paddingTop: 18,
+        borderTop: `1px solid ${dark ? 'rgba(255,200,100,0.08)' : 'rgba(180,130,70,0.15)'}`,
+      }}>
+        {planData.features.map((f, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+            <div style={{ width: 20, height: 20, borderRadius: 6, flexShrink: 0, background: accentLt, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <f.icon size={10} color={accentClr} strokeWidth={2} />
+            </div>
+            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.74rem', color: dark ? '#9a8a70' : '#6a5030', lineHeight: 1.3 }}>{f.text}</span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+};
+
+/* ════════════════════════════════════════════
+   UPGRADE PANEL
+════════════════════════════════════════════ */
+const UpgradePanel = ({ dark, textPrimary, textMuted, cardBg, cardBorder, onUpgrade, upgrading }) => {
+  const proPlan = plans[1];
+  const accentClr = dark ? '#D4901A' : '#B8741A';
+  const accentLt = dark ? 'rgba(212,144,26,0.1)' : 'rgba(184,116,26,0.08)';
+  const accentBd = dark ? 'rgba(212,144,26,0.3)' : 'rgba(184,116,26,0.3)';
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+      style={{
+        background: dark ? 'rgba(200,144,42,0.06)' : 'rgba(184,116,26,0.05)',
+        border: `2px solid ${accentBd}`,
+        borderRadius: 24, backdropFilter: 'blur(20px)',
+        padding: '28px 28px 24px', position: 'relative', overflow: 'hidden',
+        boxShadow: dark ? '0 8px 32px rgba(200,144,42,0.12)' : '0 8px 32px rgba(184,116,26,0.1)',
+        display: 'flex', flexDirection: 'column',
+      }}
+    >
+      <div style={{ position: 'absolute', top: -40, right: -40, width: 160, height: 160, borderRadius: '50%', background: accentLt, pointerEvents: 'none' }} />
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+        <TrendingUp size={16} color={accentClr} strokeWidth={2} />
+        <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.55rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: accentClr, fontWeight: 700 }}>
+          Upgrade Plan
+        </span>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 18 }}>
+        <div style={{ width: 48, height: 48, borderRadius: 15, flexShrink: 0, background: accentLt, border: `1.5px solid ${accentBd}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Crown size={22} color={accentClr} strokeWidth={1.8} />
+        </div>
+        <div>
+          <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '1.5rem', fontWeight: 800, color: accentClr, letterSpacing: '-0.02em', lineHeight: 1 }}>
+            Samraat
+          </div>
+          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', color: textMuted, marginTop: 3 }}>
+            सम्राट · The Emperor
+          </div>
+        </div>
+      </div>
+
+      <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.82rem', color: textMuted, marginBottom: 18, lineHeight: 1.6 }}>
+        Unlock the full power of VideoMeet. More participants, cloud recording, unlimited calls & premium support.
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 22, flex: 1 }}>
+        {proPlan.features.slice(0, 5).map((f, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Check size={12} color={accentClr} strokeWidth={2.5} style={{ flexShrink: 0 }} />
+            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.78rem', color: dark ? '#9a8a70' : '#6a5030' }}>{f.text}</span>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+        <div>
+          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '2rem', fontWeight: 900, color: textPrimary, letterSpacing: '-0.03em' }}>₹200</span>
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', color: textMuted, marginLeft: 5 }}>/year</span>
+        </div>
+      </div>
+
+      <button
+        onClick={onUpgrade}
+        disabled={upgrading}
+        style={{
+          width: '100%', padding: '14px 0', borderRadius: 14,
+          background: upgrading ? 'rgba(200,144,42,0.3)' : accentClr,
+          border: 'none', color: '#fff',
+          fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: '0.9rem',
+          cursor: upgrading ? 'not-allowed' : 'pointer', transition: 'all 0.2s',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+          boxShadow: upgrading ? 'none' : `0 6px 22px ${accentClr}55`,
+          letterSpacing: '-0.01em',
+        }}
+        onMouseEnter={e => { if (!upgrading) e.currentTarget.style.opacity = '0.88'; }}
+        onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}
+      >
+        {upgrading
+          ? <><span style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block', animation: 'spin 0.7s linear infinite' }} />Upgrading…</>
+          : <><TrendingUp size={16} strokeWidth={2.5} />Upgrade to Samraat</>
+        }
+      </button>
+    </motion.div>
+  );
+};
+
+/* ════════════════════════════════════════════
+   SUBSCRIPTION SECTION
+════════════════════════════════════════════ */
+const SubscriptionSection = ({ dark, textPrimary, textMuted, accentColor, cardBg, cardBorder, onSubscribe, subInfo, onSubInfoChange }) => {
+  const [upgrading, setUpgrading] = useState(false);
+
+  if (!subInfo || subInfo.plan === 'none') {
+    return (
+      <div style={{ padding: '72px 48px 80px', maxWidth: 1200, margin: '0 auto', width: '100%' }}>
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: 52 }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            background: dark ? 'rgba(255,200,100,0.07)' : 'rgba(184,116,26,0.08)',
+            border: `1px solid ${dark ? 'rgba(255,200,100,0.18)' : 'rgba(184,116,26,0.25)'}`,
+            borderRadius: 100, padding: '6px 18px', marginBottom: 20,
+          }}>
+            <Sparkles size={13} color={accentColor} />
+            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', letterSpacing: '0.15em', color: accentColor, fontWeight: 700 }}>
+              SUBSCRIPTION PLANS · सदस्यता योजनाएं
+            </span>
+          </div>
+          <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 'clamp(2rem, 3.5vw, 3rem)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.025em', color: textPrimary, marginBottom: 14 }}>
+            Choose Your <span style={{ color: accentColor }}>Raasta</span> to Success
+          </h2>
+          <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '1rem', color: textMuted, maxWidth: 520, margin: '0 auto', lineHeight: 1.7 }}>
+            Dono plans mein milegi world-class video quality.<br />Billed yearly — save big, stay connected.
+          </p>
+        </div>
+
+        {/* Plan cards — 2 columns, max 920px centered */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: 24,
+          maxWidth: 920,
+          margin: '0 auto',
+        }}>
+          {plans.map(plan => (
+            <PlanCard key={plan.id} plan={plan} dark={dark} textPrimary={textPrimary} textMuted={textMuted} cardBg={cardBg} cardBorder={cardBorder} onSubscribe={onSubscribe} />
+          ))}
+        </div>
+
+        <div style={{ textAlign: 'center', marginTop: 36 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <Shield size={13} color={dark ? '#4a8a4a' : '#2a6a2a'} />
+            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.58rem', letterSpacing: '0.1em', color: textMuted }}>
+              14-din free trial · No credit card required · Cancel anytime
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const handleUpgrade = () => { onSubscribe(plans[1]); };
+  const isPro = subInfo.plan === 'samraat';
+
+  return (
+    <div style={{ padding: '72px 48px 80px', maxWidth: 1200, margin: '0 auto', width: '100%' }}>
+      {/* Header */}
+      <div style={{ textAlign: 'center', marginBottom: 44 }}>
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 8,
+          background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.25)',
+          borderRadius: 100, padding: '6px 18px', marginBottom: 16,
+        }}>
+          <BadgeCheck size={13} color="#22c55e" />
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', letterSpacing: '0.15em', color: '#16a34a', fontWeight: 700 }}>
+            ACTIVE SUBSCRIPTION · सदस्यता सक्रिय है
+          </span>
+        </div>
+        <h2 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.025em', color: textPrimary, marginBottom: 10 }}>
+          {isPro ? 'Aap hain ' : 'Aapka '}<span style={{ color: accentColor }}>{isPro ? 'Samraat' : 'Aarambh'}</span> {isPro ? 'Plan Par' : 'Plan Chal Raha Hai'}
+        </h2>
+        <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '0.95rem', color: textMuted, maxWidth: 480, margin: '0 auto', lineHeight: 1.7 }}>
+          {isPro ? 'You have the best plan. Enjoy unlimited calls, recording & priority support.' : 'Your starter journey is on. Upgrade anytime to unlock the full Samraat experience.'}
+        </p>
+      </div>
+
+      {/* Content grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: isPro ? '1fr' : '1fr 1fr',
+        gap: 24,
+        maxWidth: isPro ? 720 : 960,
+        margin: '0 auto',
+      }}>
+        <ActiveSubscriptionPanel
+          subInfo={subInfo} dark={dark}
+          textPrimary={textPrimary} textMuted={textMuted}
+          cardBg={cardBg} cardBorder={cardBorder} accentColor={accentColor}
+        />
+        {!isPro && (
+          <UpgradePanel
+            dark={dark} textPrimary={textPrimary} textMuted={textMuted}
+            cardBg={cardBg} cardBorder={cardBorder}
+            onUpgrade={handleUpgrade} upgrading={upgrading}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
+/* ════════════════════════════════════════════
    MAIN COMPONENT
 ════════════════════════════════════════════ */
 const HomePage = () => {
   const navigate = useNavigate();
   const { user, logout, dashboardData, axiosInstance } = useAppContext();
   const [meetingIdInput, setMeetingIdInput] = useState('');
-  const [isJoining, setIsJoining]           = useState(false);
-  const [isCreating, setIsCreating]         = useState(false);
-  const [inputFocused, setInputFocused]     = useState(false);
-  const [dark, setDark]                     = useState(false);
-  const [showSchedule, setShowSchedule]     = useState(false);
-  const [subModal, setSubModal]             = useState(null);
-  const [subInfo, setSubInfo]               = useState(null);   // null=loading, {plan,startDate,expiryDate,daysRemaining}
-  const [subLoading, setSubLoading]         = useState(false);
-  const [scheduledMtg, setScheduledMtg]     = useState(null);
+  const [isJoining, setIsJoining] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+  const [inputFocused, setInputFocused] = useState(false);
+  const [dark, setDark] = useState(false);
+  const [showSchedule, setShowSchedule] = useState(false);
+  const [subModal, setSubModal] = useState(null);
+  const [subInfo, setSubInfo] = useState(null);
+  const [subLoading, setSubLoading] = useState(false);
+  const [scheduledMtg, setScheduledMtg] = useState(null);
   const inputRef = useRef(null);
   const scrollRef = useRef(null);
 
   useEffect(() => { if (!user) navigate('/login'); }, [user, navigate]);
 
-  // Fetch subscription status on mount
   const fetchSubInfo = async () => {
     try {
       const res = await axiosInstance.get('/subscription/status');
       setSubInfo(res.data);
     } catch {
-      // fallback: treat as no subscription
       setSubInfo({ plan: 'none' });
     }
   };
@@ -887,18 +794,10 @@ const HomePage = () => {
 
   if (!user) return null;
 
-  // Called after successful payment in SubscriptionModal
   const handleSubscribeStart = async (subscriptionData) => {
     setSubLoading(true);
     try {
-      // res contains the updated subscription info from /cashfree/verify
-      console.log('Payment success, updating subInfo:', subscriptionData);
       setSubInfo(subscriptionData);
-      
-      // Also refresh dashboard data to sync analytics/etc
-      fetchDashboardData();
-      
-      // Close the modal (already closed by setSubModal(null) in finally)
     } catch (err) {
       console.error('Error handling subscription success:', err);
     } finally {
@@ -923,11 +822,7 @@ const HomePage = () => {
     try {
       const meetId = Math.random().toString(36).substring(2, 10);
       const scheduledAt = new Date(`${date}T${time || '00:00'}`);
-      const res = await axiosInstance.post('/meetings/schedule', { 
-        meetId, 
-        title: title || 'Scheduled Meeting',
-        scheduledAt
-      });
+      const res = await axiosInstance.post('/meetings/schedule', { meetId, title: title || 'Scheduled Meeting', scheduledAt });
       setScheduledMtg(res.data);
     } catch { alert('Failed to schedule meeting.'); }
     finally { setIsCreating(false); }
@@ -950,21 +845,21 @@ const HomePage = () => {
   };
 
   // ── Theme tokens ──
-  const bg               = dark ? '#0D0B08' : '#F0E6D0';
-  const cardBg           = dark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.55)';
-  const cardBorder       = dark ? 'rgba(255,200,100,0.1)'  : 'rgba(200,168,130,0.3)';
-  const textPrimary      = dark ? '#F0E8D8' : '#0F0A04';
-  const textSecondary    = dark ? '#7a6a50' : '#7A5A28';
-  const textMuted        = dark ? '#4a3a20' : '#A08050';
-  const accentColor      = dark ? '#D4901A' : '#B8741A';
-  const navBg            = dark ? 'rgba(13,11,8,0.88)' : 'rgba(240,230,208,0.82)';
-  const navBorder        = dark ? 'rgba(255,200,100,0.08)' : 'rgba(180,130,70,0.18)';
-  const inputBg          = dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.55)';
-  const inputBorder      = dark ? 'rgba(255,200,100,0.15)' : 'rgba(180,130,70,0.28)';
-  const inputBorderFocus = dark ? 'rgba(212,144,26,0.6)'   : 'rgba(184,116,26,0.6)';
-  const btnBlack         = dark ? '#F0E8D8' : '#0F0A04';
-  const btnBlackText     = dark ? '#0F0A04' : '#F0E8D8';
-  const statDiv          = dark ? 'rgba(255,200,100,0.1)'  : 'rgba(180,130,70,0.2)';
+  const bg = dark ? '#0D0B08' : '#F0E6D0';
+  const cardBg = dark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.55)';
+  const cardBorder = dark ? 'rgba(255,200,100,0.1)' : 'rgba(200,168,130,0.3)';
+  const textPrimary = dark ? '#F0E8D8' : '#0F0A04';
+  const textSecondary = dark ? '#7a6a50' : '#7A5A28';
+  const textMuted = dark ? '#4a3a20' : '#A08050';
+  const accentColor = dark ? '#D4901A' : '#B8741A';
+  const navBg = dark ? 'rgba(13,11,8,0.88)' : 'rgba(240,230,208,0.82)';
+  const navBorder = dark ? 'rgba(255,200,100,0.08)' : 'rgba(180,130,70,0.18)';
+  const inputBg = dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.55)';
+  const inputBorder = dark ? 'rgba(255,200,100,0.15)' : 'rgba(180,130,70,0.28)';
+  const inputBorderFocus = dark ? 'rgba(212,144,26,0.6)' : 'rgba(184,116,26,0.6)';
+  const btnBlack = dark ? '#F0E8D8' : '#0F0A04';
+  const btnBlackText = dark ? '#0F0A04' : '#F0E8D8';
+  const statDiv = dark ? 'rgba(255,200,100,0.1)' : 'rgba(180,130,70,0.2)';
 
   const themeProps = { dark, textPrimary, textMuted, accentColor, cardBg, cardBorder, btnBlack, btnBlackText };
 
@@ -972,17 +867,17 @@ const HomePage = () => {
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
-        *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-        html,body,#root { height:100%; background:${bg}; }
-        @keyframes spin    { to { transform:rotate(360deg); } }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body, #root { height: 100%; background: ${bg}; }
+        @keyframes spin    { to { transform: rotate(360deg); } }
         @keyframes recDot  { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.15;transform:scale(.55)} }
         @keyframes blink   { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.15;transform:scale(.6)} }
-        /* Custom scrollbar */
-        .hp-scroll::-webkit-scrollbar { width:5px; }
-        .hp-scroll::-webkit-scrollbar-track { background:transparent; }
-        .hp-scroll::-webkit-scrollbar-thumb { background:${dark ? 'rgba(255,200,100,0.15)' : 'rgba(180,130,70,0.2)'}; border-radius:10px; }
+        @keyframes bounce  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(5px)} }
+        .hp-scroll::-webkit-scrollbar { width: 5px; }
+        .hp-scroll::-webkit-scrollbar-track { background: transparent; }
+        .hp-scroll::-webkit-scrollbar-thumb { background: ${dark ? 'rgba(255,200,100,0.15)' : 'rgba(180,130,70,0.2)'}; border-radius: 10px; }
         input[type="date"]::-webkit-calendar-picker-indicator,
-        input[type="time"]::-webkit-calendar-picker-indicator { filter:${dark?'invert(0.7)':'none'}; cursor:pointer; }
+        input[type="time"]::-webkit-calendar-picker-indicator { filter: ${dark ? 'invert(0.7)' : 'none'}; cursor: pointer; }
       `}</style>
 
       <div style={{
@@ -997,7 +892,6 @@ const HomePage = () => {
              radial-gradient(ellipse 80% 80% at 50% 50%, #EDE0C0 0%, #E4D0A8 100%)`,
         transition: 'background 0.4s',
       }}>
-        <HoneycombBg dark={dark} />
 
         {/* ════ NAVBAR ════ */}
         <nav style={{
@@ -1008,37 +902,37 @@ const HomePage = () => {
           background: navBg, backdropFilter: 'blur(18px)',
           transition: 'all 0.4s',
         }}>
-          <div style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer' }} onClick={() => navigate('/')}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }} onClick={() => navigate('/')}>
             <div style={{
-              width:36, height:36, borderRadius:10,
+              width: 36, height: 36, borderRadius: 10,
               background: dark ? '#F0E8D8' : '#0F0A04',
-              display:'flex', alignItems:'center', justifyContent:'center',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
               boxShadow: `0 2px 14px ${dark ? 'rgba(240,232,216,0.15)' : 'rgba(15,10,4,0.22)'}`,
-              position:'relative', transition:'background 0.4s',
+              position: 'relative', transition: 'background 0.4s',
             }}>
               <Video size={17} color={dark ? '#0F0A04' : '#F5E6C8'} strokeWidth={2} />
-              <div style={{ position:'absolute', top:5, right:5, width:7, height:7, borderRadius:'50%', background:'#E8501A', boxShadow:'0 0 6px #E8501A', animation:'blink 1.2s linear infinite' }} />
+              <div style={{ position: 'absolute', top: 5, right: 5, width: 7, height: 7, borderRadius: '50%', background: '#E8501A', boxShadow: '0 0 6px #E8501A', animation: 'blink 1.2s linear infinite' }} />
             </div>
             <div>
-              <div style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontSize:'1.05rem', fontWeight:800, color: textPrimary, letterSpacing:'-0.02em', lineHeight:1, transition:'color 0.4s' }}>VideoMeet</div>
-              <div style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.48rem', color: textMuted, letterSpacing:'0.18em', marginTop:2, transition:'color 0.4s' }}>HD · ENCRYPTED · INSTANT</div>
+              <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '1.05rem', fontWeight: 800, color: textPrimary, letterSpacing: '-0.02em', lineHeight: 1, transition: 'color 0.4s' }}>VideoMeet</div>
+              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.48rem', color: textMuted, letterSpacing: '0.18em', marginTop: 2, transition: 'color 0.4s' }}>HD · ENCRYPTED · INSTANT</div>
             </div>
           </div>
 
-          <div style={{ display:'flex', alignItems:'center', gap:14 }}>
-            <div style={{ textAlign:'right' }}>
-              <div style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.82rem', color: textPrimary, fontWeight:700 }}><LiveClock /></div>
-              <div style={{ fontSize:'0.62rem', color: textMuted, marginTop:1 }}>{new Date().toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.82rem', color: textPrimary, fontWeight: 700 }}><LiveClock /></div>
+              <div style={{ fontSize: '0.62rem', color: textMuted, marginTop: 1 }}>{new Date().toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })}</div>
             </div>
-            <div style={{ width:1, height:24, background: navBorder }} />
-            <button onClick={() => setDark(d => !d)} title={dark?'Light mode':'Dark mode'}
-              style={{ width:34, height:34, borderRadius:'50%', background: dark?'rgba(255,255,255,0.08)':'rgba(15,10,4,0.07)', border:`1.5px solid ${dark?'rgba(255,200,100,0.18)':'rgba(180,130,70,0.25)'}`, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', color: dark?'#D4901A':'#8a6030', transition:'all 0.2s' }}>
+            <div style={{ width: 1, height: 24, background: navBorder }} />
+            <button onClick={() => setDark(d => !d)}
+              style={{ width: 34, height: 34, borderRadius: '50%', background: dark ? 'rgba(255,255,255,0.08)' : 'rgba(15,10,4,0.07)', border: `1.5px solid ${dark ? 'rgba(255,200,100,0.18)' : 'rgba(180,130,70,0.25)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: dark ? '#D4901A' : '#8a6030', transition: 'all 0.2s' }}>
               {dark ? <Sun size={14} /> : <Moon size={14} />}
             </button>
-            <button onClick={logout} title="Sign out"
-              style={{ width:34, height:34, borderRadius:'50%', background: dark?'rgba(255,255,255,0.06)':'rgba(255,255,255,0.5)', border:`1.5px solid ${dark?'rgba(255,200,100,0.12)':'rgba(180,130,70,0.25)'}`, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', color: dark?'#7a6040':'#8a6030', transition:'all 0.2s' }}
-              onMouseEnter={e => { e.currentTarget.style.background=btnBlack; e.currentTarget.style.color=btnBlackText; }}
-              onMouseLeave={e => { e.currentTarget.style.background=dark?'rgba(255,255,255,0.06)':'rgba(255,255,255,0.5)'; e.currentTarget.style.color=dark?'#7a6040':'#8a6030'; }}>
+            <button onClick={logout}
+              style={{ width: 34, height: 34, borderRadius: '50%', background: dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.5)', border: `1.5px solid ${dark ? 'rgba(255,200,100,0.12)' : 'rgba(180,130,70,0.25)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: dark ? '#7a6040' : '#8a6030', transition: 'all 0.2s' }}
+              onMouseEnter={e => { e.currentTarget.style.background = btnBlack; e.currentTarget.style.color = btnBlackText; }}
+              onMouseLeave={e => { e.currentTarget.style.background = dark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.5)'; e.currentTarget.style.color = dark ? '#7a6040' : '#8a6030'; }}>
               <LogOut size={14} />
             </button>
           </div>
@@ -1048,155 +942,261 @@ const HomePage = () => {
         <div
           ref={scrollRef}
           className="hp-scroll"
-          style={{ flex:1, overflowY:'auto', overflowX:'hidden', position:'relative' }}
+          style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', position: 'relative' }}
         >
-          {/* ── HERO SECTION ── */}
-          <div className="min-h-[calc(100vh-80px)] flex flex-col items-center justify-center gap-12 px-6 py-12 md:py-24 max-w-[1200px] mx-auto w-full relative z-10 text-center">
+          {/* ── HERO: Two-column layout matching screenshot ── */}
+          <div style={{
+            position: 'relative',
+            minHeight: 'calc(100vh - 62px)',
+            display: 'flex',
+            alignItems: 'stretch',
+            overflow: 'hidden',
+          }}>
+            {/* Honeycomb only covers the left/hero area */}
+            <HoneycombBg dark={dark} />
 
-            {/* MAIN CONTENT */}
-            <motion.div initial={{ opacity:0, y:22 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.65, ease:[0.22,1,0.36,1] }}
-              className="flex flex-col items-center max-w-[850px]">
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: dark ? 'rgba(212,144,26,0.1)' : 'rgba(184,116,26,0.06)', border: `1px solid ${dark ? 'rgba(212,144,26,0.2)' : 'rgba(184,116,26,0.15)'}`, borderRadius: 100, padding: '6px 16px', marginBottom: 28 }}>
-                <div style={{ width: 6, height: 6, borderRadius: '50%', background: accentColor, boxShadow: `0 0 8px ${accentColor}`, animation: 'blink 1.5s infinite' }} />
-                <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.65rem', fontWeight: 600, color: accentColor, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Trusted for HD video calls worldwide</span>
-              </div>
-              <h1 style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontSize:'clamp(3rem, 6.5vw, 5.2rem)', fontWeight:800, lineHeight:1, letterSpacing:'-0.04em', color: textPrimary, marginBottom:28, transition:'color 0.4s' }}>
-                Video meetings,<br />
-                <span style={{ color: accentColor, transition:'color 0.4s' }}>done right.</span>
-              </h1>
-              <p style={{ fontSize:'clamp(1rem, 1.6vw, 1.15rem)', color: textSecondary, lineHeight:1.7, fontWeight:400, maxWidth:620, transition:'color 0.4s' }}>
-                Start or join crystal-clear video calls instantly — no downloads, no friction. Built for{' '}
-                <span style={{ color: accentColor, fontWeight:600 }}>speed, security, and simplicity.</span>
-              </p>
+            {/* ── LEFT: Hero content ── */}
+            <div style={{
+              flex: '1 1 0',
+              minWidth: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              padding: '60px 48px 60px 60px',
+              position: 'relative',
+              zIndex: 1,
+            }}>
+              <motion.div
+                initial={{ opacity: 0, y: 22 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+                style={{ maxWidth: 620 }}
+              >
+                {/* Badge */}
+                <div style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  background: dark ? 'rgba(212,144,26,0.1)' : 'rgba(184,116,26,0.07)',
+                  border: `1px solid ${dark ? 'rgba(212,144,26,0.22)' : 'rgba(184,116,26,0.18)'}`,
+                  borderRadius: 100, padding: '6px 16px', marginBottom: 28,
+                }}>
+                  <div style={{ width: 6, height: 6, borderRadius: '50%', background: accentColor, boxShadow: `0 0 8px ${accentColor}`, animation: 'blink 1.5s infinite', flexShrink: 0 }} />
+                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.65rem', fontWeight: 600, color: accentColor, letterSpacing: '0.04em' }}>
+                    Trusted for HD video calls worldwide
+                  </span>
+                </div>
 
-              {/* CTA Row */}
-              <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:16, marginTop:45, flexWrap:'wrap', width:'100%' }}>
-                <NewMeetingDropdown dark={dark} isCreating={isCreating} onInstant={handleStartInstant} onScheduled={() => setShowSchedule(true)} btnBlack={btnBlack} btnBlackText={btnBlackText} />
-                <form onSubmit={handleJoin}>
-                  <div style={{
-                    display:'flex', alignItems:'center', gap:10,
-                    background: inputFocused ? (dark?'rgba(255,255,255,0.09)':'rgba(255,255,255,0.8)') : inputBg,
-                    border:`1.5px solid ${inputFocused ? inputBorderFocus : inputBorder}`,
-                    borderRadius:14, padding:'11px 14px 11px 16px',
-                    transition:'all 0.2s', backdropFilter:'blur(8px)', minWidth:255,
-                  }}>
-                    <Hash size={13} color={inputFocused ? accentColor : (dark?'rgba(255,200,100,0.25)':'rgba(100,60,10,0.3)')} style={{ flexShrink:0, transition:'color 0.2s' }} />
-                    <input ref={inputRef} type="text" placeholder="Enter code or link" value={meetingIdInput} onChange={e => setMeetingIdInput(e.target.value)} onFocus={() => setInputFocused(true)} onBlur={() => setInputFocused(false)}
-                      style={{ flex:1, background:'none', border:'none', outline:'none', fontFamily:"'Space Mono', monospace", fontSize:'0.8rem', color: textPrimary, letterSpacing:'0.06em' }} />
-                    <AnimatePresence>
-                      {meetingIdInput.trim() && (
-                        <motion.button type="submit" initial={{ opacity:0, scale:0.7 }} animate={{ opacity:1, scale:1 }} exit={{ opacity:0, scale:0.7 }} disabled={isJoining}
-                          style={{ padding:'6px 14px', borderRadius:10, background: btnBlack, color: btnBlackText, border:'none', cursor:'pointer', fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:700, fontSize:'0.74rem', whiteSpace:'nowrap' }}>
-                          {isJoining ? '…' : 'Join'}
-                        </motion.button>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </form>
-              </div>
+                {/* Headline */}
+                <h1 style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontSize: 'clamp(2.8rem, 5.5vw, 4.8rem)',
+                  fontWeight: 800, lineHeight: 1.0, letterSpacing: '-0.04em',
+                  color: textPrimary, marginBottom: 22, transition: 'color 0.4s',
+                }}>
+                  Video meetings,<br />
+                  <span style={{ color: accentColor, transition: 'color 0.4s' }}>done right.</span>
+                </h1>
 
-              {/* Stats */}
-              <div className="flex flex-wrap items-center justify-center mt-16 pt-10 border-t transition-all duration-400 gap-y-6"
-                style={{ borderTopColor: statDiv, width:'100%' }}>
-                {[{val:'99.9%',lbl:'Uptime'},{val:'<80ms',lbl:'Avg Latency'},{val:'256-bit',lbl:'Encryption'},{val:'1–100',lbl:'Participants'}].map(({val,lbl},i) => (
-                  <div key={lbl} className={`flex flex-col px-10 ${i < 3 ? 'md:border-r' : 'border-none'} transition-all duration-400`}
-                    style={{ borderRightColor: statDiv }}>
-                    <span style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontSize:'1.6rem', fontWeight:800, color: textPrimary, letterSpacing:'-0.04em', transition:'color 0.4s' }}>{val}</span>
-                    <span style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.58rem', color: textMuted, letterSpacing:'0.14em', textTransform:'uppercase', marginTop:4, transition:'color 0.4s' }}>{lbl}</span>
-                  </div>
-                ))}
-              </div>
+                {/* Subtitle */}
+                <p style={{
+                  fontSize: 'clamp(0.95rem, 1.5vw, 1.1rem)',
+                  color: textSecondary, lineHeight: 1.7, fontWeight: 400,
+                  maxWidth: 520, marginBottom: 40, transition: 'color 0.4s',
+                }}>
+                  Start or join crystal-clear video calls instantly — no downloads, no friction. Built for{' '}
+                  <span style={{ color: accentColor, fontWeight: 600 }}>speed, security, and simplicity.</span>
+                </p>
 
-              {/* Pills */}
-              <div style={{ display:'flex', gap:10, marginTop:24, flexWrap:'wrap', justifyContent:'center' }}>
-                {[{icon:Zap,text:'Instant HD'},{icon:Shield,text:'E2E Encrypted'},{icon:Globe,text:'Browser-based'}].map(({icon:Icon,text}) => (
-                  <div key={text} style={{ display:'flex', alignItems:'center', gap:8, background: dark?'rgba(255,255,255,0.05)':'rgba(255,255,255,0.55)', border:`1px solid ${dark?'rgba(255,200,100,0.12)':'rgba(180,130,70,0.22)'}`, borderRadius:100, padding:'6px 16px', fontSize:'0.75rem', color: textSecondary, fontWeight:500, backdropFilter:'blur(8px)', transition:'all 0.4s' }}>
-                    <Icon size={12} color={accentColor} />{text}
-                  </div>
-                ))}
-              </div>
+                {/* CTA Row */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap', marginBottom: 52 }}>
+                  <NewMeetingDropdown dark={dark} isCreating={isCreating} onInstant={handleStartInstant} onScheduled={() => setShowSchedule(true)} btnBlack={btnBlack} btnBlackText={btnBlackText} />
+                  <form onSubmit={handleJoin} style={{ flex: '0 0 auto' }}>
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: 10,
+                      background: inputFocused ? (dark ? 'rgba(255,255,255,0.09)' : 'rgba(255,255,255,0.85)') : inputBg,
+                      border: `1.5px solid ${inputFocused ? inputBorderFocus : inputBorder}`,
+                      borderRadius: 14, padding: '11px 14px 11px 16px',
+                      transition: 'all 0.2s', backdropFilter: 'blur(8px)', minWidth: 230,
+                    }}>
+                      <Hash size={13} color={inputFocused ? accentColor : (dark ? 'rgba(255,200,100,0.25)' : 'rgba(100,60,10,0.3)')} style={{ flexShrink: 0, transition: 'color 0.2s' }} />
+                      <input
+                        ref={inputRef} type="text" placeholder="Enter code or link"
+                        value={meetingIdInput} onChange={e => setMeetingIdInput(e.target.value)}
+                        onFocus={() => setInputFocused(true)} onBlur={() => setInputFocused(false)}
+                        style={{ flex: 1, background: 'none', border: 'none', outline: 'none', fontFamily: "'Space Mono', monospace", fontSize: '0.8rem', color: textPrimary, letterSpacing: '0.06em' }}
+                      />
+                      <AnimatePresence>
+                        {meetingIdInput.trim() && (
+                          <motion.button type="submit" initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.7 }} disabled={isJoining}
+                            style={{ padding: '6px 14px', borderRadius: 10, background: btnBlack, color: btnBlackText, border: 'none', cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: '0.74rem', whiteSpace: 'nowrap' }}>
+                            {isJoining ? '…' : 'Join'}
+                          </motion.button>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </form>
+                </div>
 
-              {/* Scroll hint */}
-              <button onClick={scrollToPlans} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8, marginTop:45, background:'none', border:'none', cursor:'pointer', padding:10, color: textMuted, transition:'color 0.2s' }}
-                onMouseEnter={e => e.currentTarget.style.color = accentColor}
-                onMouseLeave={e => e.currentTarget.style.color = textMuted}>
-                <span style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.65rem', letterSpacing:'0.15em' }}>VIEW SUBSCRIPTION PLANS</span>
-                <ChevronDown size={18} style={{ animation:'bounce 1.8s ease-in-out infinite' }} />
-              </button>
-            </motion.div>
-          </div>
+                {/* Stats row */}
+                <div style={{
+                  display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 0,
+                  paddingTop: 32, borderTop: `1px solid ${statDiv}`,
+                  marginBottom: 24,
+                }}>
+                  {[{ val: '99.9%', lbl: 'Uptime' }, { val: '<80ms', lbl: 'Avg Latency' }, { val: '256-bit', lbl: 'Encryption' }, { val: '1–100', lbl: 'Participants' }].map(({ val, lbl }, i) => (
+                    <div key={lbl} style={{
+                      display: 'flex', flexDirection: 'column', paddingRight: i < 3 ? 32 : 0, paddingLeft: i > 0 ? 32 : 0,
+                      borderRight: i < 3 ? `1px solid ${statDiv}` : 'none',
+                    }}>
+                      <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '1.5rem', fontWeight: 800, color: textPrimary, letterSpacing: '-0.04em', transition: 'color 0.4s' }}>{val}</span>
+                      <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.55rem', color: textMuted, letterSpacing: '0.14em', textTransform: 'uppercase', marginTop: 3, transition: 'color 0.4s' }}>{lbl}</span>
+                    </div>
+                  ))}
+                </div>
 
-          {/* ── SECONDARY CONTENT (Balanced Grid) ── */}
-          <div className="px-6 pb-24 max-w-[1300px] mx-auto w-full relative z-10">
-            <motion.div 
-              initial={{ opacity:0, y:20 }} 
-              whileInView={{ opacity:1, y:0 }} 
-              viewport={{ once:true }}
-              transition={{ duration:0.6, delay:0.2 }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-8"
-            >
-              {/* Quick actions Panel */}
-              <div style={{ background: cardBg, border:`1px solid ${cardBorder}`, borderRadius:24, backdropFilter:'blur(20px)', padding:'32px', transition:'all 0.4s' }}>
-                <div style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.58rem', letterSpacing:'0.18em', textTransform:'uppercase', color: textMuted, marginBottom:24 }}>// quick actions</div>
-                <div style={{ display:'flex', alignItems:'center', gap:14, marginBottom:28 }}>
-                  <div style={{ width:48, height:48, borderRadius:14, background: btnBlack, color: btnBlackText, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:800, fontSize:'1.1rem' }}>
+                {/* Pills */}
+                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 44 }}>
+                  {[{ icon: Zap, text: 'Instant HD' }, { icon: Shield, text: 'E2E Encrypted' }, { icon: Globe, text: 'Browser-based' }].map(({ icon: Icon, text }) => (
+                    <div key={text} style={{ display: 'flex', alignItems: 'center', gap: 8, background: dark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.55)', border: `1px solid ${dark ? 'rgba(255,200,100,0.12)' : 'rgba(180,130,70,0.22)'}`, borderRadius: 100, padding: '6px 16px', fontSize: '0.75rem', color: textSecondary, fontWeight: 500, backdropFilter: 'blur(8px)', transition: 'all 0.4s' }}>
+                      <Icon size={12} color={accentColor} />{text}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Scroll hint */}
+                <button onClick={scrollToPlans} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: 8, background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: textMuted, transition: 'color 0.2s' }}
+                  onMouseEnter={e => e.currentTarget.style.color = accentColor}
+                  onMouseLeave={e => e.currentTarget.style.color = textMuted}>
+                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.62rem', letterSpacing: '0.15em' }}>VIEW SUBSCRIPTION PLANS</span>
+                  <ChevronDown size={16} style={{ animation: 'bounce 1.8s ease-in-out infinite' }} />
+                </button>
+              </motion.div>
+            </div>
+
+            {/* ── RIGHT: Action panels ── */}
+            <div style={{
+              width: 380,
+              flexShrink: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              padding: '40px 48px 40px 24px',
+              gap: 20,
+              position: 'relative',
+              zIndex: 1,
+            }}>
+              {/* Quick Actions Panel */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+                style={{
+                  background: cardBg, border: `1px solid ${cardBorder}`,
+                  borderRadius: 24, backdropFilter: 'blur(20px)',
+                  padding: '24px', transition: 'all 0.4s',
+                }}
+              >
+                <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.55rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: textMuted, marginBottom: 18 }}>// quick actions</div>
+
+                {/* User row */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+                  <div style={{ width: 42, height: 42, borderRadius: 12, background: btnBlack, color: btnBlackText, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: '1rem', flexShrink: 0 }}>
                     {user?.name?.charAt(0).toUpperCase() || 'U'}
                   </div>
                   <div>
-                    <div style={{ fontSize:'0.75rem', color: textMuted, fontWeight:500 }}>Welcome back,</div>
-                    <div style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:800, fontSize:'1.2rem', color: textPrimary, letterSpacing:'-0.02em' }}>{user?.name}</div>
+                    <div style={{ fontSize: '0.7rem', color: textMuted, fontWeight: 500 }}>Welcome back,</div>
+                    <div style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: '1.1rem', color: textPrimary, letterSpacing: '-0.02em' }}>{user?.name}</div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Action buttons */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   <button onClick={handleStartInstant} disabled={isCreating}
-                    style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'18px', borderRadius:18, background: btnBlack, border:'none', cursor:'pointer', transition:'all 0.2s', color: btnBlackText, opacity: isCreating?0.55:1 }}
-                    onMouseEnter={e => { if (!isCreating) e.currentTarget.style.transform='translateY(-2px)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform='translateY(0)'; }}>
-                    <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+                    style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px 18px', borderRadius: 16, background: btnBlack, border: 'none', cursor: 'pointer', transition: 'all 0.2s', color: btnBlackText, opacity: isCreating ? 0.55 : 1 }}
+                    onMouseEnter={e => { if (!isCreating) e.currentTarget.style.opacity = '0.85'; }}
+                    onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                       {isCreating
-                        ? <span style={{ width:14, height:14, border:`2px solid rgba(128,128,128,0.3)`, borderTopColor: btnBlackText, borderRadius:'50%', animation:'spin 0.7s linear infinite' }} />
-                        : <Zap size={16} color={btnBlackText} strokeWidth={2.5} />}
-                      <span style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:700, fontSize:'0.9rem' }}>Instant</span>
+                        ? <span style={{ width: 14, height: 14, border: `2px solid rgba(128,128,128,0.3)`, borderTopColor: btnBlackText, borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} />
+                        : <Zap size={15} color={btnBlackText} strokeWidth={2.5} />}
+                      <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: '0.88rem' }}>Instant Meeting</span>
                     </div>
-                    <ArrowUpRight size={14} style={{ opacity:0.5 }} />
+                    <ArrowUpRight size={13} style={{ opacity: 0.5 }} />
                   </button>
 
                   <button onClick={() => setShowSchedule(true)}
-                    style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'18px', borderRadius:18, background: dark?'rgba(255,255,255,0.05)':'rgba(255,255,255,0.55)', border:`1.5px solid ${inputBorder}`, cursor:'pointer', transition:'all 0.2s', color: textPrimary }}
-                    onMouseEnter={e => { e.currentTarget.style.background=dark?'rgba(255,200,100,0.08)':'rgba(180,130,70,0.1)'; e.currentTarget.style.transform='translateY(-2px)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.background=dark?'rgba(255,255,255,0.05)':'rgba(255,255,255,0.55)'; e.currentTarget.style.transform='translateY(0)'; }}>
-                    <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-                      <CalendarClock size={16} color={accentColor} strokeWidth={2} />
-                      <span style={{ fontFamily:"'Plus Jakarta Sans', sans-serif", fontWeight:700, fontSize:'0.9rem' }}>Schedule</span>
+                    style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px 18px', borderRadius: 16, background: dark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.6)', border: `1.5px solid ${inputBorder}`, cursor: 'pointer', transition: 'all 0.2s', color: textPrimary }}
+                    onMouseEnter={e => { e.currentTarget.style.background = dark ? 'rgba(255,200,100,0.08)' : 'rgba(180,130,70,0.1)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = dark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.6)'; }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <CalendarClock size={15} color={accentColor} strokeWidth={2} />
+                      <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: '0.88rem' }}>Schedule Meeting</span>
                     </div>
-                    <ArrowUpRight size={14} style={{ opacity:0.35 }} />
+                    <ArrowUpRight size={13} style={{ opacity: 0.35 }} />
                   </button>
-                </div>
-              </div>
 
-              {/* Past meetings Panel */}
-              <div style={{ background: cardBg, border:`1px solid ${cardBorder}`, borderRadius:24, backdropFilter:'blur(20px)', padding:'24px', display:'flex', flexDirection:'column' }}>
-                <div style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.58rem', letterSpacing:'0.18em', textTransform:'uppercase', color: textMuted, marginBottom:16 }}>// past meetings</div>
-                <div style={{ flex:1, display:'flex', flexDirection:'column', gap:8 }}>
+                  {/* Join input */}
+                  <form onSubmit={handleJoin}>
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: 10,
+                      background: inputFocused ? (dark ? 'rgba(255,255,255,0.09)' : 'rgba(255,255,255,0.85)') : (dark ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.6)'),
+                      border: `1.5px solid ${inputFocused ? inputBorderFocus : inputBorder}`,
+                      borderRadius: 16, padding: '13px 16px',
+                      transition: 'all 0.2s',
+                    }}>
+                      <Hash size={13} color={inputFocused ? accentColor : (dark ? 'rgba(255,200,100,0.25)' : 'rgba(100,60,10,0.3)')} style={{ flexShrink: 0, transition: 'color 0.2s' }} />
+                      <input
+                        type="text" placeholder="Paste meeting code…"
+                        value={meetingIdInput} onChange={e => setMeetingIdInput(e.target.value)}
+                        onFocus={() => setInputFocused(true)} onBlur={() => setInputFocused(false)}
+                        style={{ flex: 1, background: 'none', border: 'none', outline: 'none', fontFamily: "'Space Mono', monospace", fontSize: '0.75rem', color: textPrimary, letterSpacing: '0.04em' }}
+                      />
+                      <AnimatePresence>
+                        {meetingIdInput.trim() && (
+                          <motion.button type="submit" initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.7 }} disabled={isJoining}
+                            style={{ padding: '5px 12px', borderRadius: 9, background: btnBlack, color: btnBlackText, border: 'none', cursor: 'pointer', fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700, fontSize: '0.72rem', whiteSpace: 'nowrap' }}>
+                            {isJoining ? '…' : 'Join'}
+                          </motion.button>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </form>
+                </div>
+              </motion.div>
+
+              {/* Past Meetings Panel */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                style={{
+                  background: cardBg, border: `1px solid ${cardBorder}`,
+                  borderRadius: 24, backdropFilter: 'blur(20px)',
+                  padding: '20px', display: 'flex', flexDirection: 'column',
+                  transition: 'all 0.4s',
+                }}
+              >
+                <div style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.55rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: textMuted, marginBottom: 14 }}>// past meetings</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
                   {dashboardData?.recentMeetings?.length > 0 ? (
-                    dashboardData.recentMeetings.slice(0,3).map((mtg,idx) => <MtgRow key={mtg._id||idx} mtg={mtg} idx={idx} dark={dark} />)
+                    dashboardData.recentMeetings.slice(0, 3).map((mtg, idx) => (
+                      <MtgRow key={mtg._id || idx} mtg={mtg} idx={idx} dark={dark} />
+                    ))
                   ) : (
-                    <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:10 }}>
-                      <Clock size={22} color={textMuted} style={{ opacity:0.3 }} />
-                      <p style={{ fontSize:'0.8rem', color: textMuted }}>No history yet</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '20px 0' }}>
+                      <Clock size={20} color={textMuted} style={{ opacity: 0.3 }} />
+                      <p style={{ fontSize: '0.78rem', color: textMuted }}>No history yet</p>
                     </div>
                   )}
                 </div>
-                <div style={{ marginTop:14, padding:'8px 12px', borderRadius:12, background: dark?'rgba(255,255,255,0.04)':'rgba(255,255,255,0.45)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                    <div style={{ width:6, height:6, borderRadius:'50%', background:'#22c55e' }} />
-                    <span style={{ fontFamily:"'Space Mono', monospace", fontSize:'0.58rem', color: textMuted }}>SYSTEMS ACTIVE</span>
+                <div style={{ marginTop: 12, padding: '7px 12px', borderRadius: 10, background: dark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e' }} />
+                    <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '0.55rem', color: textMuted }}>ALL SYSTEMS GO</span>
                   </div>
-                  <span style={{ fontSize:'0.65rem', color: textMuted }}>{dashboardData?.recentMeetings?.length||0} total</span>
+                  <span style={{ fontSize: '0.62rem', color: textMuted }}>{dashboardData?.recentMeetings?.length || 0} meetings</span>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
           </div>
 
           {/* ════ SUBSCRIPTION SECTION ════ */}
@@ -1215,12 +1215,12 @@ const HomePage = () => {
           {showSchedule && (
             <ScheduleModal dark={dark} onClose={() => setShowSchedule(false)} onCreate={handleScheduledCreate}
               textPrimary={textPrimary} textMuted={textMuted}
-              cardBg={dark?'rgba(22,17,10,0.97)':'rgba(253,249,241,0.97)'}
+              cardBg={dark ? 'rgba(22,17,10,0.97)' : 'rgba(253,249,241,0.97)'}
               cardBorder={cardBorder} btnBlack={btnBlack} btnBlackText={btnBlackText} />
           )}
         </AnimatePresence>
 
-        {/* Subscription Payment Modal */}
+        {/* Subscription Modal */}
         {subModal && (
           <SubscriptionModal
             plan={subModal}
@@ -1229,29 +1229,7 @@ const HomePage = () => {
             onSuccess={handleSubscribeStart}
           />
         )}
-
-        {/* Scheduled Success Modal */}
-        <AnimatePresence>
-          {scheduledMtg && (
-            <ScheduledSuccessModal 
-              mtg={scheduledMtg} 
-              dark={dark} 
-              onClose={() => setScheduledMtg(null)} 
-              textPrimary={textPrimary}
-              textMuted={textMuted}
-              cardBg={dark?'rgba(18,14,8,0.98)':'rgba(253,249,241,0.98)'}
-              cardBorder={accentColor}
-            />
-          )}
-        </AnimatePresence>
       </div>
-
-      <style>{`
-        @keyframes bounce {
-          0%,100% { transform:translateY(0); }
-          50%      { transform:translateY(5px); }
-        }
-      `}</style>
     </>
   );
 };

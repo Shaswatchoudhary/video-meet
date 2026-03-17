@@ -1,8 +1,6 @@
 import User from '../models/User.js';
 
-// @desc    Start a new subscription (aarambh or samraat)
-// @route   POST /api/subscription/start
-// @access  Private
+//start subscription
 const startSubscription = async (req, res) => {
   try {
     const { plan } = req.body;
@@ -74,9 +72,7 @@ const getSubscriptionStatus = async (req, res) => {
   }
 };
 
-// @desc    Upgrade subscription
-// @route   POST /api/subscription/upgrade
-// @access  Private
+//upgrade subscription
 const upgradeSubscription = async (req, res) => {
   try {
     const { plan } = req.body || {};
